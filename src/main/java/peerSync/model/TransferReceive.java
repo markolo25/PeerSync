@@ -1,4 +1,3 @@
-package peerSync.model;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -41,6 +40,10 @@ public class TransferReceive extends Thread {
         BufferedOutputStream buffer = null;
         Socket socket = null;
         try {
+            socket = new Socket(source, port);
+            System.out.println("Connecting...");
+
+            //recieve file
             byte[] mbytearray = new byte[1024 * 1024 * 16]; //MAX Size = 16 megabytes
 
             InputStream inputStream = socket.getInputStream();
@@ -60,34 +63,40 @@ public class TransferReceive extends Thread {
                 if (bytesRead >= 0) {
                     current += bytesRead;
                 }
-            } while (bytesRead > -1); //if there's nothing left to read you're done
+            }
+            while (bytesRead < -1); //if there's nothing left to read you're done
 
             buffer.write(mbytearray, 0, current); //Write array from 0 to current size
             buffer.flush();
             System.out.println("File " + directory + " downloaded (" + current + " bytes read)");
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
 
-        } finally {
+        }
+        finally {
             //Close your streams even though java GC will do it for you  >_> 
             if (fileOutputStream != null) {
                 try {
                     fileOutputStream.close();
-                } catch (IOException ex) {
+                }
+                catch (IOException ex) {
                     Logger.getLogger(TransferReceive.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (buffer != null) {
                 try {
                     buffer.close();
-                } catch (IOException ex) {
+                }
+                catch (IOException ex) {
                     Logger.getLogger(TransferReceive.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
             if (socket != null) {
                 try {
                     socket.close();
-                } catch (IOException ex) {
+                }
+                catch (IOException ex) {
                     Logger.getLogger(TransferReceive.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
@@ -97,14 +106,16 @@ public class TransferReceive extends Thread {
 
     /**
      * Preventing overwrites by checking if file sohuld be replaced or not.
+     *
      * @param newFile
-     * @return 
+     * @return
      */
     public boolean replaceFile(File newFile) {
         File tmpDir = new File(directory);
         if (tmpDir.exists()) {
 
-        } else {
+        }
+        else {
 
         }
         return true;

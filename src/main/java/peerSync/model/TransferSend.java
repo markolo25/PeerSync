@@ -3,8 +3,6 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package peerSync.model;
-
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,7 +20,6 @@ import java.util.logging.Logger;
 public class TransferSend extends Thread {
 
     private int port;
-    private String source;
     private String directory;
 
     /**
@@ -30,12 +27,10 @@ public class TransferSend extends Thread {
      * to a computer
      *
      * @param port
-     * @param source
      * @param directory
      */
-    public TransferSend(int port, String source, String directory) {
+    public TransferSend(int port, String directory) {
         this.port = port;
-        this.source = source;
         this.directory = directory;
     }
 
@@ -66,7 +61,9 @@ public class TransferSend extends Thread {
                     System.out.println("Sending " + directory + " " + mbytearray.length + " bytes");
                     outputStream.write(mbytearray, 0, mbytearray.length);
                     outputStream.flush();
-                    System.out.println("Done. ");
+                    System.out.println("Done. Killing Server In charge of: " + directory);
+                    break;
+
                 }
                 catch (Exception e) {
                     e.printStackTrace();
