@@ -8,6 +8,6 @@
     <children>
         <Button fx:id="folderBtn" layoutX="41.0" layoutY="33.0" onAction="#selectFolderHandler" text="Select Folder" />
         <Label fx:id="folderPathLbl" layoutX="148.0" layoutY="37.0" minHeight="16" minWidth="69" />
-        <Button fx:id="syncBtn" layoutX="57.0" layoutY="120.0" mnemonicParsing="false" onAction="#syncHandler" text="Sync" />
+        <Button fx:id="pairBtn" layoutX="57.0" layoutY="120.0" mnemonicParsing="false" onAction="#pairHandler" text="Pair" />
     </children>
 </AnchorPane>

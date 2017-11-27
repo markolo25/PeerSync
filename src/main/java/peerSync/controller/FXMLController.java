@@ -1,6 +1,7 @@
 package peerSync.controller;
 
 import java.net.URL;
+import java.util.Collection;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -35,13 +36,22 @@ public class FXMLController extends JPanel implements Initializable {
         }
 
     }
-    
+
     @FXML
-    public void syncHandler (ActionEvent event) {
-        Thread discoveryL = new Thread(DiscoverListen.getInstance());
-        Thread discoveryB = new Thread(DiscoverBroadcast.getInstance());
-        discoveryL.start();
-        discoveryB.start();
+    public void pairHandler(ActionEvent event) {
+        DiscoverListen discoveryL = new DiscoverListen();
+        DiscoverBroadcast discoveryB = new DiscoverBroadcast();
+        new Thread(discoveryL).start();
+        new Thread(discoveryB).start();
+
+        Collection hashL = discoveryL.getHashTable();
+        Collection hashB = discoveryB.getHashTable();
+
+        while (true) {
+            System.out.println("hashL = " + hashL);
+            System.out.println("hashB = " + hashB);
+        }
+
     }
 
     @Override

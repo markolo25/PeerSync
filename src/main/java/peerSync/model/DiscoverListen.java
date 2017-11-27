@@ -19,8 +19,13 @@ import java.util.logging.Logger;
  * @author Mini-PC
  */
 public class DiscoverListen implements Runnable {
-    
+
     Collection hashTable = new HashSet();
+
+    public Collection getHashTable() {
+        return hashTable;
+    }
+    
     DatagramSocket socket;
 
     @Override
@@ -50,23 +55,23 @@ public class DiscoverListen implements Runnable {
                     //Send a response
                     DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, packet.getAddress(), packet.getPort());
                     socket.send(sendPacket);
-                    
-                    hashTable.add(sendPacket.getAddress());
-                    System.out.println(hashTable);
+
+                    hashTable.add(sendPacket.getAddress().getHostAddress());
+                    System.out.println("Listen: " + hashTable);
                     System.out.println(getClass().getName() + ">>>Sent packet to: " + sendPacket.getAddress().getHostAddress());
                 }
             }
-        }
-        catch (IOException ex) {
+        } catch (IOException ex) {
             Logger.getLogger(DiscoverListen.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
     public static DiscoverListen getInstance() {
         return DiscoverListenHolder.INSTANCE;
     }
-    
+
     private static class DiscoverListenHolder {
+
         private static final DiscoverListen INSTANCE = new DiscoverListen();
     }
 }

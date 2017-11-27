@@ -24,6 +24,11 @@ import java.util.logging.Logger;
 public class DiscoverBroadcast implements Runnable {
     
     Collection hashTable = new HashSet();
+
+    public Collection getHashTable() {
+        return hashTable;
+    }
+
     DatagramSocket c;
     
     @Override
@@ -86,8 +91,8 @@ public class DiscoverBroadcast implements Runnable {
             String message = new String(receivePacket.getData()).trim();
             if (message.equals("DISCOVER_SERVER_RESPONSE")) {
                 //DO SOMETHING WITH THE SERVER'S IP (for example, store it in your controller)
-                hashTable.add(receivePacket.getAddress());
-                System.out.println(hashTable);
+                hashTable.add(receivePacket.getAddress().getHostAddress());
+                System.out.println("Broadcast: " + hashTable);
             }
 
             //Close the port!
