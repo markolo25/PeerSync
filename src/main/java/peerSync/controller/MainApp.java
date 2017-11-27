@@ -6,8 +6,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import peerSync.model.*;
-
 
 public class MainApp extends Application {
 
@@ -32,11 +30,7 @@ public class MainApp extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        //launch(args);
-        Thread discoveryL = new Thread(DiscoverListen.getInstance());
-        Thread discoveryB = new Thread(DiscoverBroadcast.getInstance());
-        discoveryL.start();
-        discoveryB.start();
+        launch(args);
     }
 
 }
