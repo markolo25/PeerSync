@@ -1,2 +1,4 @@
 peerSync\controller\MainApp.class
 peerSync\controller\FXMLController.class
+peerSync\model\TransferSend.class
+peerSync\model\TransferReceive.class

@@ -15,9 +15,9 @@ import java.util.logging.Logger;
  */
 public class TransferReceive extends Thread {
 
-    public int port;
-    public String source;
-    public String directory;
+    private int port;
+    private String source;
+    private String directory;
 
     /**
      * TransferRecieve Constructor, fills in attributes needed to transfer file
@@ -95,6 +95,11 @@ public class TransferReceive extends Thread {
 
     }
 
+    /**
+     * Preventing overwrites by checking if file sohuld be replaced or not.
+     * @param newFile
+     * @return 
+     */
     public boolean replaceFile(File newFile) {
         File tmpDir = new File(directory);
         if (tmpDir.exists()) {
