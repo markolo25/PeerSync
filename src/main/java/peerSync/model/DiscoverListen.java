@@ -9,6 +9,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -18,6 +20,7 @@ import java.util.logging.Logger;
  */
 public class DiscoverListen implements Runnable {
     
+    Collection hashTable = new HashSet();
     DatagramSocket socket;
 
     @Override
@@ -41,13 +44,15 @@ public class DiscoverListen implements Runnable {
 
                 //See if the packet holds the right command (message)
                 String message = new String(packet.getData()).trim();
-                if (message.equals("DISCOVER_FUIFSERVER_REQUEST")) {
-                    byte[] sendData = "DISCOVER_FUIFSERVER_RESPONSE".getBytes();
+                if (message.equals("DISCOVER_SERVER_REQUEST")) {
+                    byte[] sendData = "DISCOVER_SERVER_RESPONSE".getBytes();
 
                     //Send a response
                     DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, packet.getAddress(), packet.getPort());
                     socket.send(sendPacket);
-
+                    
+                    hashTable.add(sendPacket.getAddress());
+                    System.out.println(hashTable);
                     System.out.println(getClass().getName() + ">>>Sent packet to: " + sendPacket.getAddress().getHostAddress());
                 }
             }

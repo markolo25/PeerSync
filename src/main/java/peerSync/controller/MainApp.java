@@ -32,7 +32,7 @@ public class MainApp extends Application {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        launch(args);
+        //launch(args);
         Thread discoveryL = new Thread(DiscoverListen.getInstance());
         Thread discoveryB = new Thread(DiscoverBroadcast.getInstance());
         discoveryL.start();

@@ -11,7 +11,9 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
+import java.util.Collection;
 import java.util.Enumeration;
+import java.util.HashSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -21,6 +23,7 @@ import java.util.logging.Logger;
  */
 public class DiscoverBroadcast implements Runnable {
     
+    Collection hashTable = new HashSet();
     DatagramSocket c;
     
     @Override
@@ -31,7 +34,7 @@ public class DiscoverBroadcast implements Runnable {
             c = new DatagramSocket();
             c.setBroadcast(true);
 
-            byte[] sendData = "DISCOVER_FUIFSERVER_REQUEST".getBytes();
+            byte[] sendData = "DISCOVER_SERVER_REQUEST".getBytes();
 
             //Try the 255.255.255.255 first
             try {
@@ -81,9 +84,10 @@ public class DiscoverBroadcast implements Runnable {
 
             //Check if the message is correct
             String message = new String(receivePacket.getData()).trim();
-            if (message.equals("DISCOVER_FUIFSERVER_RESPONSE")) {
+            if (message.equals("DISCOVER_SERVER_RESPONSE")) {
                 //DO SOMETHING WITH THE SERVER'S IP (for example, store it in your controller)
-                //Controller_Base.setServerIp(receivePacket.getAddress());
+                hashTable.add(receivePacket.getAddress());
+                System.out.println(hashTable);
             }
 
             //Close the port!
