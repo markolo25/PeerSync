@@ -31,7 +31,9 @@ public class peerSyncModel {
         System.out.println(filesToBeSynced);
 
         //start listening for peers
+        
         //send meta data to peers
+        
         //initialize syncing
     }
 
