@@ -9,8 +9,8 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.Collection;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,10 +20,10 @@ import java.util.logging.Logger;
  */
 public class DiscoverListen implements Runnable {
 
-    Collection hashTable = new HashSet();
+    Set ipSet  = new HashSet();
 
-    public Collection getHashTable() {
-        return hashTable;
+    public Set getIpSet() {
+        return ipSet;
     }
     
     DatagramSocket socket;
@@ -56,8 +56,8 @@ public class DiscoverListen implements Runnable {
                     DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, packet.getAddress(), packet.getPort());
                     socket.send(sendPacket);
 
-                    hashTable.add(sendPacket.getAddress().getHostAddress());
-                    System.out.println("Listen: " + hashTable);
+                    ipSet.add(sendPacket.getAddress().getHostAddress());
+                    System.out.println("Listen: " + ipSet);
                     System.out.println(getClass().getName() + ">>>Sent packet to: " + sendPacket.getAddress().getHostAddress());
                 }
             }

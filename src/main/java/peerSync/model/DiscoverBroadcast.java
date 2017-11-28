@@ -11,9 +11,9 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
-import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -23,10 +23,10 @@ import java.util.logging.Logger;
  */
 public class DiscoverBroadcast implements Runnable {
     
-    Collection hashTable = new HashSet();
+    Set ipSet = new HashSet();
 
-    public Collection getHashTable() {
-        return hashTable;
+    public Set getIpSet() {
+        return ipSet;
     }
 
     DatagramSocket c;
@@ -91,8 +91,8 @@ public class DiscoverBroadcast implements Runnable {
             String message = new String(receivePacket.getData()).trim();
             if (message.equals("DISCOVER_SERVER_RESPONSE")) {
                 //DO SOMETHING WITH THE SERVER'S IP (for example, store it in your controller)
-                hashTable.add(receivePacket.getAddress().getHostAddress());
-                System.out.println("Broadcast: " + hashTable);
+                ipSet.add(receivePacket.getAddress().getHostAddress());
+                System.out.println("Broadcast: " + ipSet);
             }
 
             //Close the port!
