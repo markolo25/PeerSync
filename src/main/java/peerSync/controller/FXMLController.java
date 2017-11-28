@@ -39,10 +39,8 @@ public class FXMLController extends JPanel implements Initializable {
         chooser.setAcceptAllFileFilterUsed(false);
 
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            System.out.println(chooser.getSelectedFile());
             folderPathLbl.setText(chooser.getSelectedFile().toString());
             driver = new peerSyncModel(chooser.getSelectedFile().toString());
-            driver.scanFileDirectories();
         } else {
             folderPathLbl.setText("no selection");
         }
