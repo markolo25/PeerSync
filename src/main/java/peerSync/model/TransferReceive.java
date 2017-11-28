@@ -1,3 +1,4 @@
+package peerSync.model;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
