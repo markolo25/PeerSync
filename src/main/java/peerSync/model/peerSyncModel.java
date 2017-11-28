@@ -14,14 +14,20 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 public class peerSyncModel {
 
     private File directory;
-    private ArrayList<File> filesToBeSynced;
+    private ArrayList<peerFile> filesToBeSynced;
 
-    public peerSyncModel(String strDirectory) {     
+    public peerSyncModel(String strDirectory) {
         //get Directory
-        this.directory = new File(strDirectory);       
-        //get File List
-        filesToBeSynced = new ArrayList<>(FileUtils.listFiles(this.directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE));      
-    }
+        this.directory = new File(strDirectory);
 
+        //get File List, and make peerFiles out of them
+        filesToBeSynced = new ArrayList<peerFile>();
+        for (File file : new ArrayList<>(FileUtils.listFiles(this.directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE))) {
+            filesToBeSynced.add(new peerFile(file, directory));
+        }
+        System.out.println(filesToBeSynced);
+        
+        
+    }
 
 }
