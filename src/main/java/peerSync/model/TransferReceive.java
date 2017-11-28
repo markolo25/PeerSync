@@ -38,11 +38,11 @@ public class TransferReceive extends Thread {
         int bytesRead;
         int current = 0;
         FileOutputStream fileOutputStream = null;
-        BufferedOutputStream buffer = null;
+        BufferedOutputStream bufferedOutputStream = null;
         Socket socket = null;
         try {
             socket = new Socket(source, port);
-            System.out.println("Connecting...");
+            System.out.println("Waiting on server for (" + directory + ")");
 
             //recieve file
             byte[] mbytearray = new byte[1024 * 1024 * 16]; //MAX Size = 16 megabytes
@@ -50,7 +50,7 @@ public class TransferReceive extends Thread {
             InputStream inputStream = socket.getInputStream();
             fileOutputStream = new FileOutputStream(directory);
 
-            buffer = new BufferedOutputStream(fileOutputStream);
+            bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
 
             //Read mbytearray starting at the 0th position up to it's length
             bytesRead = inputStream.read(mbytearray, 0, mbytearray.length);
@@ -67,9 +67,9 @@ public class TransferReceive extends Thread {
             }
             while (bytesRead < -1); //if there's nothing left to read you're done
 
-            buffer.write(mbytearray, 0, current); //Write array from 0 to current size
-            buffer.flush();
-            System.out.println("File " + directory + " downloaded (" + current + " bytes read)");
+            bufferedOutputStream.write(mbytearray, 0, current); //Write array from 0 to current size
+            bufferedOutputStream.flush();
+            System.out.println("Recieved: (" + directory + ") from (" + source + ") " + mbytearray.length + " bytes");
 
         }
         catch (Exception e) {
@@ -82,15 +82,15 @@ public class TransferReceive extends Thread {
                     fileOutputStream.close();
                 }
                 catch (IOException ex) {
-                    Logger.getLogger(TransferReceive.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.println("Can't close fileOutputStream");
                 }
             }
-            if (buffer != null) {
+            if (bufferedOutputStream != null) {
                 try {
-                    buffer.close();
+                    bufferedOutputStream.close();
                 }
                 catch (IOException ex) {
-                    Logger.getLogger(TransferReceive.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.println("Can't close BufferedOutputStream");
                 }
             }
             if (socket != null) {
@@ -98,27 +98,10 @@ public class TransferReceive extends Thread {
                     socket.close();
                 }
                 catch (IOException ex) {
-                    Logger.getLogger(TransferReceive.class.getName()).log(Level.SEVERE, null, ex);
+                    System.out.println("Can't close socket");
                 }
             }
         }
 
-    }
-
-    /**
-     * Preventing overwrites by checking if file sohuld be replaced or not.
-     *
-     * @param newFile
-     * @return
-     */
-    public boolean replaceFile(File newFile) {
-        File tmpDir = new File(directory);
-        if (tmpDir.exists()) {
-
-        }
-        else {
-
-        }
-        return true;
     }
 }

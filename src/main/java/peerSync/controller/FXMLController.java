@@ -14,10 +14,12 @@ import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import peerSync.model.DiscoverBroadcast;
 import peerSync.model.DiscoverListen;
+import peerSync.model.peerSyncModel;
 
 public class FXMLController extends JPanel implements Initializable {
 
     JFileChooser chooser;
+    peerSyncModel driver;
     Collection hashL, hashB;
     ObservableList ipList = FXCollections.observableArrayList();
 
@@ -39,6 +41,8 @@ public class FXMLController extends JPanel implements Initializable {
         if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             System.out.println(chooser.getSelectedFile());
             folderPathLbl.setText(chooser.getSelectedFile().toString());
+            driver = new peerSyncModel(chooser.getSelectedFile().toString());
+            driver.scanFileDirectories();
         } else {
             folderPathLbl.setText("no selection");
         }
@@ -76,6 +80,9 @@ public class FXMLController extends JPanel implements Initializable {
         DiscoverListen discoveryL = new DiscoverListen();
         new Thread(discoveryL).start();
         hashL = discoveryL.getIpSet();
+        
+        
+        
 
         // TODO
     }
