@@ -1,7 +1,0 @@
-peerSync\controller\FXMLController.class
-peerSync\model\DiscoverListen.class
-peerSync\model\peerSyncModel.class
-peerSync\controller\MainApp.class
-peerSync\model\DiscoverBroadcast.class
-peerSync\model\TransferSend.class
-peerSync\model\TransferReceive.class
