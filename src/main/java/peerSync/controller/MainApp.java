@@ -9,7 +9,6 @@ import javafx.stage.Stage;
 import peerSync.model.TransferReceive;
 import peerSync.model.TransferSend;
 
-
 public class MainApp extends Application {
 
     @Override
