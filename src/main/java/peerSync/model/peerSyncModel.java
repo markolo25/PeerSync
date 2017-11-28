@@ -2,6 +2,7 @@ package peerSync.model;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
@@ -14,7 +15,9 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 public class peerSyncModel {
 
     private File directory;
+
     private ArrayList<peerFile> filesToBeSynced;
+    private HashSet<String> remoteIPs;
 
     public peerSyncModel(String strDirectory) {
         //get Directory
@@ -26,8 +29,22 @@ public class peerSyncModel {
             filesToBeSynced.add(new peerFile(file, directory));
         }
         System.out.println(filesToBeSynced);
-        
-        
+
+        //start listening for peers
+        //send meta data to peers
+        //initialize syncing
+    }
+
+    public void queueServers() {
+
+    }
+
+    public void queueClient() {
+
+    }
+
+    public void broadCast() {
+        //Insert broadcast here
     }
 
 }
