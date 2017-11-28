@@ -9,6 +9,10 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
+import java.net.InterfaceAddress;
+import java.net.NetworkInterface;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
@@ -20,17 +24,29 @@ import java.util.logging.Logger;
  */
 public class DiscoverListen implements Runnable {
 
-    Set ipSet  = new HashSet();
+    Set ipSet = new HashSet();
 
     public Set getIpSet() {
         return ipSet;
     }
-    
+
+    ArrayList<String> myIp = new ArrayList();
     DatagramSocket socket;
 
     @Override
     public void run() {
         try {
+            Enumeration interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = (NetworkInterface) interfaces.nextElement();
+                if (networkInterface.isLoopback() || !networkInterface.isUp()) {
+                    continue; // Don't want to broadcast to the loopback interface
+                }
+                for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
+                    myIp.add(interfaceAddress.getAddress().getHostAddress());
+                }
+            }
+
             //Keep a socket open to listen to all the UDP trafic that is destined for this port
             socket = new DatagramSocket(8888, InetAddress.getByName("0.0.0.0"));
             socket.setBroadcast(true);
@@ -56,7 +72,10 @@ public class DiscoverListen implements Runnable {
                     DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, packet.getAddress(), packet.getPort());
                     socket.send(sendPacket);
 
-                    ipSet.add(sendPacket.getAddress().getHostAddress());
+                    if (!myIp.contains(sendPacket.getAddress().getHostAddress())) {
+                        ipSet.add(sendPacket.getAddress().getHostAddress());
+                    }
+
                     System.out.println("Listen: " + ipSet);
                     System.out.println(getClass().getName() + ">>>Sent packet to: " + sendPacket.getAddress().getHostAddress());
                 }
@@ -64,14 +83,5 @@ public class DiscoverListen implements Runnable {
         } catch (IOException ex) {
             Logger.getLogger(DiscoverListen.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }
-
-    public static DiscoverListen getInstance() {
-        return DiscoverListenHolder.INSTANCE;
-    }
-
-    private static class DiscoverListenHolder {
-
-        private static final DiscoverListen INSTANCE = new DiscoverListen();
     }
 }

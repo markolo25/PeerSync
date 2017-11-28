@@ -78,10 +78,6 @@ public class FXMLController extends JPanel implements Initializable {
         DiscoverListen discoveryL = new DiscoverListen();
         new Thread(discoveryL).start();
         hashL = discoveryL.getIpSet();
-        
-        
-        
-
         // TODO
     }
 }
