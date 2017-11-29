@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.apache.commons.io.IOUtils;
@@ -70,6 +71,26 @@ public class peerFile {
     public void setMd5(String md5) {
         this.md5 = md5;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final peerFile other = (peerFile) obj;
+        if (!Objects.equals(this.md5, other.md5)) {
+            return false;
+        }
+        return true;
+    }
+    
+    
     
     
 

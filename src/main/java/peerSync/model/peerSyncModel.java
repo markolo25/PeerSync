@@ -3,6 +3,7 @@ package peerSync.model;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
@@ -16,25 +17,42 @@ public class peerSyncModel {
 
     private File directory;
 
-    private ArrayList<peerFile> filesToBeSynced;
+    private Set<peerFile> trackedFiles;
     private HashSet<String> remoteIPs;
+    private String status;
 
+    /**
+     *
+     * @param strDirectory
+     */
     public peerSyncModel(String strDirectory) {
         //get Directory
         this.directory = new File(strDirectory);
 
-        //get File List, and make peerFiles out of them
-        filesToBeSynced = new ArrayList<peerFile>();
+        trackedFiles = new HashSet<>();
         for (File file : new ArrayList<>(FileUtils.listFiles(this.directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE))) {
-            filesToBeSynced.add(new peerFile(file, directory));
+            trackedFiles.add(new peerFile(file, directory));
         }
-        System.out.println(filesToBeSynced);
-
+        System.out.println(trackedFiles);
+        status = "created";
         //start listening for peers
-        
         //send meta data to peers
-        
         //initialize syncing
+
+    }
+
+    public void run() {
+        status = "running";
+
+        while (true) {
+            ArrayList<peerFile> proposedFiles = new ArrayList<>();
+            //get File List, and make peerFiles out of them
+            for (File file : new ArrayList<>(FileUtils.listFiles(this.directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE))) {
+                proposedFiles.add(new peerFile(file, directory));
+            }
+
+        }
+
     }
 
     public void queueServers() {
