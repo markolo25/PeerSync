@@ -20,7 +20,7 @@ public class FXMLController extends JPanel implements Initializable {
 
     JFileChooser chooser;
     peerSyncModel driver;
-    Collection hashL, hashB;
+    Collection hashL;
     ObservableList ipList = FXCollections.observableArrayList();
 
     @FXML
@@ -49,8 +49,7 @@ public class FXMLController extends JPanel implements Initializable {
     
     @FXML
     public void broadcastHandler(ActionEvent event) {
-        DiscoverBroadcast discoveryB = new DiscoverBroadcast();
-        new Thread(discoveryB).start();
+        driver.broadCast();
     }
 
     @FXML
@@ -58,19 +57,6 @@ public class FXMLController extends JPanel implements Initializable {
         ipList.setAll(hashL);
         ipAddrListView.setItems(ipList);
         ipAddrListView.refresh();
-        
-//        while (true) {
-//
-//            System.out.println("hashL = " + hashL);
-//            System.out.println("hashB = " + hashB);
-//
-//            if (hashL.size() > 0) {
-//                ipList.setAll(hashL);
-//                ipAddrListView.setItems(ipList);
-//                ipAddrListView.refresh();
-//                break;
-//            }
-//        }
     }
 
     @Override

@@ -18,7 +18,7 @@ public class peerSyncModel {
     private File directory;
 
     private Set<peerFile> trackedFiles;
-    private HashSet<String> remoteIPs;
+    private Set<String> remoteIPs;
     private String status;
 
     /**
@@ -35,10 +35,14 @@ public class peerSyncModel {
         }
         System.out.println(trackedFiles);
         status = "created";
-        //start listening for peers
+        
         //send meta data to peers
         //initialize syncing
 
+    }
+    
+    public Set<String> getRemoteIPs() {
+        return remoteIPs;
     }
 
     public void run() {
@@ -54,7 +58,7 @@ public class peerSyncModel {
         }
 
     }
-
+    
     public void queueServers() {
 
     }
@@ -64,7 +68,8 @@ public class peerSyncModel {
     }
 
     public void broadCast() {
-        //Insert broadcast here
+        DiscoverBroadcast discoveryB = new DiscoverBroadcast();
+        new Thread(discoveryB).start();
     }
 
 }
