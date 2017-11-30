@@ -68,8 +68,7 @@ public class peerSyncModel {
     }
 
     public void broadCast() {
-        DiscoverBroadcast discoveryB = new DiscoverBroadcast();
-        new Thread(discoveryB).start();
+        //Insert broadcast here
     }
 
 }

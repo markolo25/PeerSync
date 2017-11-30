@@ -22,9 +22,12 @@ public class FXMLController extends JPanel implements Initializable {
     peerSyncModel driver;
     Collection hashL;
     ObservableList ipList = FXCollections.observableArrayList();
+    DiscoverListen discoveryL = new DiscoverListen();
 
     @FXML
     private Label folderPathLbl;
+    @FXML
+    private Label ipAddrLbl;
 
     @FXML
     private ListView<String> ipAddrListView;
@@ -49,7 +52,10 @@ public class FXMLController extends JPanel implements Initializable {
     
     @FXML
     public void broadcastHandler(ActionEvent event) {
-        driver.broadCast();
+        DiscoverBroadcast discoveryB = new DiscoverBroadcast();
+        new Thread(discoveryB).start();
+        String ipString = discoveryL.getMyIp().get(0).toString();
+        ipAddrLbl.setText(ipString);
     }
 
     @FXML
@@ -61,7 +67,6 @@ public class FXMLController extends JPanel implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        DiscoverListen discoveryL = new DiscoverListen();
         new Thread(discoveryL).start();
         hashL = discoveryL.getIpSet();
         // TODO

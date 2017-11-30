@@ -7,11 +7,17 @@
 
 <AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8.0.141" xmlns:fx="http://javafx.com/fxml/1" fx:controller="peerSync.controller.FXMLController">
     <children>
-        <Button fx:id="folderBtn" layoutX="41.0" layoutY="33.0" onAction="#selectFolderHandler" text="Select Folder" />
-        <Label fx:id="folderPathLbl" layoutX="148.0" layoutY="37.0" minHeight="16" minWidth="69" />
-        <Label layoutX="135.0" layoutY="146.0" text="Paired IP Addresses:" />
-        <Button fx:id="rereshBtn" layoutX="45.0" layoutY="167.0" mnemonicParsing="false" onAction="#refreshHandler" text="Refresh List" />
-        <ListView fx:id="ipAddrListView" layoutX="135.0" layoutY="167.0" prefHeight="100.0" prefWidth="200.0" />
-        <Button fx:id="brdcstBtn" layoutX="43.0" layoutY="88.0" mnemonicParsing="false" onAction="#broadcastHandler" text="Broadcast IP" />
+        <Button fx:id="folderBtn" layoutX="329.0" layoutY="44.0" onAction="#selectFolderHandler" text="Select Folder" />
+        <Label fx:id="folderPathLbl" layoutX="329.0" layoutY="74.0" minHeight="16" minWidth="69" prefHeight="17.0" prefWidth="246.0" />
+        <Label layoutX="117.0" layoutY="104.0" text="Available IP Addresses:" />
+        <Button fx:id="rereshBtn" layoutX="27.0" layoutY="125.0" mnemonicParsing="false" onAction="#refreshHandler" text="Refresh List" />
+        <ListView fx:id="ipAddrListView" layoutX="117.0" layoutY="125.0" prefHeight="192.0" prefWidth="166.0" />
+        <Button fx:id="brdcstBtn" layoutX="25.0" layoutY="44.0" mnemonicParsing="false" onAction="#broadcastHandler" text="Broadcast IP" />
+        <ListView fx:id="itemListView" layoutX="329.0" layoutY="125.0" prefHeight="192.0" prefWidth="246.0" />
+        <Label layoutX="329.0" layoutY="104.0" text="Items:" />
+        <Label layoutX="117.0" layoutY="48.0" text="Your IP:" />
+        <Label fx:id="ipAddrLbl" layoutX="165.0" layoutY="48.0" prefHeight="17.0" prefWidth="121.0" />
+      <Button layoutX="329.0" layoutY="331.0" mnemonicParsing="false" text="Sync" />
+      <Button layoutX="519.0" layoutY="331.0" mnemonicParsing="false" text="Refresh" />
     </children>
 </AnchorPane>
