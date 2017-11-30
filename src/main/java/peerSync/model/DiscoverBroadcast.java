@@ -63,6 +63,7 @@ public class DiscoverBroadcast implements Runnable {
                 for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
                     InetAddress broadcast = interfaceAddress.getBroadcast();
                     myIp.add(interfaceAddress.getAddress().getHostAddress());
+                    System.out.println("Broadcast: " + myIp);
                     if (broadcast == null) {
                         continue;
                     }
@@ -94,11 +95,8 @@ public class DiscoverBroadcast implements Runnable {
                 //DO SOMETHING WITH THE SERVER'S IP (for example, store it in your controller)
                 if (!myIp.contains(receivePacket.getAddress().getHostAddress())) {
                     ipSet.add(receivePacket.getAddress().getHostAddress());
-
                 }
-                System.out.println("Broadcast: " + ipSet);
             }
-
             //Close port
             datasock.close();
         } catch (IOException ex) {

@@ -31,10 +31,6 @@ public class DiscoverListen implements Runnable {
     }
 
     ArrayList<String> myIp = new ArrayList();
-    public ArrayList<String> getMyIp() {
-        return myIp;
-    }
-    
     DatagramSocket socket;
 
     @Override
