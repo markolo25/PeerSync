@@ -17,7 +17,7 @@ public class peerSyncModel implements Runnable {
 
     private File directory;
 
-    private Set<peerFile> trackedFiles;
+    private Set<PeerFile> trackedFiles;
     private HashSet<String> remoteIPs;
     private String status;
 
@@ -42,17 +42,17 @@ public class peerSyncModel implements Runnable {
         status = "running";
 
         while (true) {
-            HashSet<peerFile> proposedFiles = new HashSet<>();
+            HashSet<PeerFile> proposedFiles = new HashSet<>();
             //get File List, and make peerFiles out of them
             for (File file : new ArrayList<>(FileUtils.listFiles(this.directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE))) {
-                peerFile fileAdded = new peerFile(file, directory);
+                PeerFile fileAdded = new PeerFile(file, directory);
                 proposedFiles.add(fileAdded);
                 if (!trackedFiles.contains(fileAdded)) { //If file is different from a tracked add it
                     trackedFiles.add(fileAdded);
                     System.out.println(file + " Added");
                 }
             }
-            for (peerFile pFileEval : trackedFiles) {
+            for (PeerFile pFileEval : trackedFiles) {
                 if (!proposedFiles.contains(pFileEval)) { //If file has been removed or modified delete them
                     trackedFiles.remove(pFileEval);
                     System.out.println(pFileEval.getFile() + "Removed");

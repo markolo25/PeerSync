@@ -19,13 +19,13 @@ import org.apache.commons.codec.digest.DigestUtils;
  *
  * @author Mark Levie Mendoza <markolo25@gmail.com>
  */
-public class peerFile {
+public class PeerFile {
 
     private File file;
     private String relativeDirectory;
     private String md5;
 
-    public peerFile(File file, File baseFolder) {
+    public PeerFile(File file, File baseFolder) {
         this.file = file;
         this.relativeDirectory = baseFolder.toURI().relativize(file.toURI()).getPath();
         this.md5 = null;
@@ -82,7 +82,7 @@ public class peerFile {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final peerFile other = (peerFile) obj;
+        final PeerFile other = (PeerFile) obj;
         if (!Objects.equals(this.md5, other.md5)) {
             return false;
         }
