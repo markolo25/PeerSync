@@ -13,7 +13,7 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
  * @author Mark Levie Mendoza <markolo25@gmail.com>
  *
  */
-public class peerSyncModel {
+public class peerSyncModel implements Runnable {
 
     private File directory;
 
@@ -30,10 +30,6 @@ public class peerSyncModel {
         this.directory = new File(strDirectory);
 
         trackedFiles = new HashSet<>();
-        for (File file : new ArrayList<>(FileUtils.listFiles(this.directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE))) {
-            trackedFiles.add(new peerFile(file, directory));
-        }
-        System.out.println(trackedFiles);
         status = "created";
         //start listening for peers
         //send meta data to peers
@@ -41,14 +37,27 @@ public class peerSyncModel {
 
     }
 
+    @Override
     public void run() {
         status = "running";
 
         while (true) {
-            ArrayList<peerFile> proposedFiles = new ArrayList<>();
+            HashSet<peerFile> proposedFiles = new HashSet<>();
             //get File List, and make peerFiles out of them
             for (File file : new ArrayList<>(FileUtils.listFiles(this.directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE))) {
-                proposedFiles.add(new peerFile(file, directory));
+                peerFile fileAdded = new peerFile(file, directory);
+                proposedFiles.add(fileAdded);
+                if (!trackedFiles.contains(fileAdded)) { //If file is different from a tracked add it
+                    trackedFiles.add(fileAdded);
+                    System.out.println(file + " Added");
+                }
+            }
+            for (peerFile pFileEval : trackedFiles) {
+                if (!proposedFiles.contains(pFileEval)) { //If file has been removed or modified delete them
+                    trackedFiles.remove(pFileEval);
+                    System.out.println(pFileEval.getFile() + "Removed");
+                }
+
             }
 
         }

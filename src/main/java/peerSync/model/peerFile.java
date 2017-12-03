@@ -26,7 +26,6 @@ public class peerFile {
     private String md5;
 
     public peerFile(File file, File baseFolder) {
-        System.out.println(baseFolder);
         this.file = file;
         this.relativeDirectory = baseFolder.toURI().relativize(file.toURI()).getPath();
         this.md5 = null;
@@ -37,7 +36,7 @@ public class peerFile {
             fileInputStream.close();
         }
         catch (IOException ex) {
-            System.out.println("File not Found");
+            System.out.println(file + " not Found");
             ex.printStackTrace();
         }
     }
@@ -46,7 +45,6 @@ public class peerFile {
     public String toString() {
         return "peerFile{" + "file=" + file + ", relativeDirectory=" + relativeDirectory + ", md5=" + md5 + '}';
     }
-    
 
     public File getFile() {
         return file;
@@ -72,6 +70,7 @@ public class peerFile {
         this.md5 = md5;
     }
 
+    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -89,9 +88,5 @@ public class peerFile {
         }
         return true;
     }
-    
-    
-    
-    
 
 }
