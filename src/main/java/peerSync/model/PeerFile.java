@@ -38,6 +38,8 @@ public class PeerFile implements Serializable {
         }
         catch (Exception ex) {
             System.out.println(file + " not Found");
+            System.out.println("Exception in PeerFile");
+
             ex.printStackTrace();
         }
     }

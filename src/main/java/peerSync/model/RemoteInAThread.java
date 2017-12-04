@@ -19,11 +19,14 @@ import java.util.logging.Logger;
 public class RemoteInAThread implements Runnable {
 
     private Collection remoteIPs;
-    private PeerFile fileAdded;
+    private PeerFile file;
+    private boolean isDelete;
 
-    public RemoteInAThread(Collection remoteIPs, PeerFile fileAdded) {
+    public RemoteInAThread(Collection remoteIPs, PeerFile fileAdded, boolean isDelete) {
         this.remoteIPs = remoteIPs;
-        this.fileAdded = fileAdded;
+        this.file = fileAdded;
+        this.isDelete = isDelete;
+
     }
 
     @Override
@@ -31,17 +34,27 @@ public class RemoteInAThread implements Runnable {
         RemoteInterface remCli = null;
         try {
             //Setup Client
-            remCli = (RemoteInterface) Naming.lookup("rmi://" + new ArrayList<>(remoteIPs).get(0) + "/req");
-        } catch (Exception ex) {
+            if (remoteIPs != null) {
+                remCli = (RemoteInterface) Naming.lookup("rmi://" + new ArrayList<>(remoteIPs).get(0) + "/req");
+            }
+        }
+        catch (Exception ex) {
             System.out.println(ex.getMessage());
             System.out.println("No Peers Found");
         }
         try {
-            if (fileAdded != null) {
-                remCli.recieveFile(fileAdded);
+            if (file != null && file.getFile() != null) {
+                if (isDelete) {
+                    remCli.deleteFile(file);
 
+                }
+                else {
+                    remCli.recieveFile(file);
+
+                }
             }
-        } catch (RemoteException ex) {
+        }
+        catch (RemoteException ex) {
             ex.printStackTrace();
         }
 

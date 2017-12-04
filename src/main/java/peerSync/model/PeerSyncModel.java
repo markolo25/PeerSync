@@ -71,7 +71,7 @@ public class PeerSyncModel implements Runnable {
                         System.out.println(file + " Added");
                         
                         //Create a runnable class, that will make an RMI call to open a socket to recieve a file.
-                        new Thread(new RemoteInAThread(remoteIPs,fileAdded)).start();
+                        new Thread(new RemoteInAThread(remoteIPs,fileAdded,false)).start();
                         
                         //Create a server to send a file
                         new TransferSend(55265, fileAdded.getFile().getAbsolutePath()).send();
@@ -80,6 +80,7 @@ public class PeerSyncModel implements Runnable {
                 }
                 catch (Exception e) {
                     System.out.println(e.getMessage());
+                    System.out.println("Exception in Line 83 of Model");
                 }
             }
             HashSet<PeerFile> trackedFilesCpy = new HashSet<>(trackedFiles);
