@@ -63,6 +63,7 @@ public class TransferSend {
                 }
                 catch (Exception e) {
                     e.printStackTrace();
+                    new File(directory).delete();
                     break;
                 }
                 finally {
