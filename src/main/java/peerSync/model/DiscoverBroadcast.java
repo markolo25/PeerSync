@@ -32,7 +32,7 @@ public class DiscoverBroadcast implements Runnable {
 
     @Override
     public void run() {
-        // Find the server using UDP broadcast
+        // Find server using UDP broadcast
         try {
             // Open port to send package
             socket = new DatagramSocket();
@@ -82,18 +82,18 @@ public class DiscoverBroadcast implements Runnable {
 
             // Wait for a response
             byte[] receiveBuffer = new byte[15000];
-            DatagramPacket receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
-            socket.receive(receivePacket);
+            DatagramPacket packet = new DatagramPacket(receiveBuffer, receiveBuffer.length);
+            socket.receive(packet);
 
             // Got a response (if someone says it's listening to me)
-            System.out.println("Broadcast: Recieved response from " + receivePacket.getAddress().getHostAddress());
+            System.out.println("Broadcast: Recieved response from " + packet.getAddress().getHostAddress());
 
             // Check if message match
-            String message = new String(receivePacket.getData()).trim();
+            String message = new String(packet.getData()).trim();
             if (message.equals("PeerSyncResponse")) {
                 // Add IP address to ipSet if is not own IP
-                if (!myIp.contains(receivePacket.getAddress().getHostAddress())) {
-                    ipSet.add(receivePacket.getAddress().getHostAddress());
+                if (!myIp.contains(packet.getAddress().getHostAddress())) {
+                    ipSet.add(packet.getAddress().getHostAddress());
                 }
                 System.out.println("Broadcast List: " + ipSet);
             }

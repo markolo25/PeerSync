@@ -60,19 +60,6 @@ public class FXMLController extends JPanel implements Initializable {
         ipList.setAll(hashL);
         ipAddrListView.setItems(ipList);
         ipAddrListView.refresh();
-        
-//        while (true) {
-//
-//            System.out.println("hashL = " + hashL);
-//            System.out.println("hashB = " + hashB);
-//
-//            if (hashL.size() > 0) {
-//                ipList.setAll(hashL);
-//                ipAddrListView.setItems(ipList);
-//                ipAddrListView.refresh();
-//                break;
-//            }
-//        }
     }
 
     @Override

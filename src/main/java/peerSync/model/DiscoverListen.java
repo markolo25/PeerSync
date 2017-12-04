@@ -59,7 +59,7 @@ public class DiscoverListen implements Runnable {
                 socket.receive(packet);
 
                 // Packet received
-                System.out.println("Listen: Packet received from " + packet.getAddress().getHostAddress() + "; Message: " + new String(packet.getData()));
+                System.out.println("Listen: Packet received from " + packet.getAddress().getHostAddress());
 
                 // Check if message match
                 String message = new String(packet.getData()).trim();
