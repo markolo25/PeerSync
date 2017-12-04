@@ -56,7 +56,6 @@ public class peerSyncModel implements Runnable {
         try {
             //Setup RMI Server Stub
             remoteInterface remServ = new RequestRecieveServer(directory.toString());
-            //remoteInterface stub = (remoteInterface) UnicastRemoteObject.exportObject(remServ, 0);
             Registry reg = LocateRegistry.createRegistry(1099);
             System.out.println("ready to recieve open requests");
             reg.rebind("req", remServ);
@@ -68,36 +67,46 @@ public class peerSyncModel implements Runnable {
         }
 
         while (true) {
+            remoteInterface remCli = null;
             try {
                 //Setup Client
-                remoteInterface remCli = (remoteInterface) Naming.lookup("rmi://" + remoteIPs.stream().findFirst() + ":5000/req");
-            }
-            catch (Exception ex) {
-                //System.out.println("No Peers Found");
-            }
+                remCli = (remoteInterface) Naming.lookup("rmi://" + new ArrayList<>(remoteIPs).get(0) + ":5000/req");
 
-            HashSet<PeerFile> proposedFiles = new HashSet<>();
-            //get File List, and make peerFiles out of them
-            for (File file : new ArrayList<>(FileUtils.listFiles(this.directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE))) {
-                try {
-                    PeerFile fileAdded = new PeerFile(file, directory);
-                    proposedFiles.add(fileAdded);
-                    if (!trackedFiles.contains(fileAdded)) { //If file is different from a tracked add it
-                        trackedFiles.add(fileAdded);
-                        System.out.println(file + " Added");
+                if (remCli == null) {
+                    System.out.println("remCli is null");
+                }
+
+                HashSet<PeerFile> proposedFiles = new HashSet<>();
+                //get File List, and make peerFiles out of them
+                for (File file : new ArrayList<>(FileUtils.listFiles(this.directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE))) {
+                    try {
+                        PeerFile fileAdded = new PeerFile(file, directory);
+                        proposedFiles.add(fileAdded);
+                        if (!trackedFiles.contains(fileAdded)) { //If file is different from a tracked add it
+                            trackedFiles.add(fileAdded);
+                            System.out.println(file + " Added");
+                            remCli.openRecieveSocket(fileAdded);
+                            new TransferSend(55265, fileAdded.getFile().getAbsolutePath());
+
+                        }
+                    }
+                    catch (Exception e) {
+                        //NOOP: Reason is that file is gone, so it will be deleted
                     }
                 }
-                catch (Exception e) {
-                    //NOOP: Reason is that file is gone, so it will be deleted
+                HashSet<PeerFile> trackedFilesCpy = new HashSet<>(trackedFiles);
+                for (PeerFile pFileEval : trackedFilesCpy) {
+                    if (!proposedFiles.contains(pFileEval)) { //If file has been removed or modified delete them
+                        trackedFiles.remove(pFileEval);
+                        System.out.println(pFileEval.getFile() + "Removed");
+                    }
+
                 }
             }
-            HashSet<PeerFile> trackedFilesCpy = new HashSet<>(trackedFiles);
-            for (PeerFile pFileEval : trackedFilesCpy) {
-                if (!proposedFiles.contains(pFileEval)) { //If file has been removed or modified delete them
-                    trackedFiles.remove(pFileEval);
-                    System.out.println(pFileEval.getFile() + "Removed");
-                }
 
+            catch (Exception ex) {
+                System.out.println(ex.getMessage());
+                System.out.println("No Peers Found");
             }
 
         }
