@@ -15,73 +15,71 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
- * @author Mini-PC
+ * @author Amanda
  */
 public class DiscoverListen implements Runnable {
 
-    Set ipSet = new HashSet();
-
+    Set ipSet = new HashSet(); // Collects IP addresses
+    ArrayList<String> myIp = new ArrayList(); // Collects own IP address(es)
+    DatagramSocket socket;
+    
     public Set getIpSet() {
         return ipSet;
-    }
-
-    ArrayList<String> myIp = new ArrayList();
-    DatagramSocket socket;
+    }    
 
     @Override
     public void run() {
         try {
+            // Listen for own IP addresses
             Enumeration interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
                 NetworkInterface networkInterface = (NetworkInterface) interfaces.nextElement();
                 if (networkInterface.isLoopback() || !networkInterface.isUp()) {
-                    continue; // Don't want to broadcast to the loopback interface
+                    continue; // Don't broadcast to loopback interface
                 }
+                // Add own IP addresses to myIp
                 for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
                     myIp.add(interfaceAddress.getAddress().getHostAddress());
                 }
             }
 
-            //Keep a socket open to listen to all the UDP trafic that is destined for this port
-            socket = new DatagramSocket(8888, InetAddress.getByName("0.0.0.0"));
+            // Keep socket open to listen to all the UDP trafic that is destined for this port
+            socket = new DatagramSocket(8000, InetAddress.getByName("0.0.0.0"));
             socket.setBroadcast(true);
 
             while (true) {
-                System.out.println(getClass().getName() + ">>>Ready to receive broadcast packets!");
+                System.out.println("Listen: Ready to receive broadcast packets");
 
-                //Receive a packet
-                byte[] recvBuf = new byte[15000];
-                DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.length);
+                // Receive a packet (if someone is shouting it's IP to me)
+                byte[] receiveBuffer = new byte[15000];
+                DatagramPacket packet = new DatagramPacket(receiveBuffer, receiveBuffer.length);
                 socket.receive(packet);
 
-                //Packet received
-                System.out.println(getClass().getName() + ">>>Discovery packet received from: " + packet.getAddress().getHostAddress());
-                System.out.println(getClass().getName() + ">>>Packet received; data: " + new String(packet.getData()));
+                // Packet received
+                System.out.println("Listen: Packet received from " + packet.getAddress().getHostAddress() + "; Message: " + new String(packet.getData()));
 
-                //See if the packet holds the right command (message)
+                // Check if message match
                 String message = new String(packet.getData()).trim();
-                if (message.equals("DISCOVER_SERVER_REQUEST")) {
-                    byte[] sendData = "DISCOVER_SERVER_RESPONSE".getBytes();
+                if (message.equals("PeerSyncRequest")) {
+                    byte[] sendData = "PeerSyncResponse".getBytes();
 
-                    //Send a response
+                    // Send a response (tell shouter that I am heard it)
                     DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, packet.getAddress(), packet.getPort());
                     socket.send(sendPacket);
 
                     if (!myIp.contains(sendPacket.getAddress().getHostAddress())) {
                         ipSet.add(sendPacket.getAddress().getHostAddress());
                     }
-
-                    System.out.println("Listen: " + ipSet);
-                    System.out.println(getClass().getName() + ">>>Sent packet to: " + sendPacket.getAddress().getHostAddress());
+                    System.out.println("Listen List: " + ipSet);
+                    System.out.println("Listen: Sent packet to: " + sendPacket.getAddress().getHostAddress());
                 }
             }
-        } catch (IOException ex) {
-            Logger.getLogger(DiscoverListen.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 }

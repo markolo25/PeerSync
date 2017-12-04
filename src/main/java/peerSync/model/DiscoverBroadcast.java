@@ -15,51 +15,51 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
- * @author Mini-PC
+ * @author Amanda
  */
 public class DiscoverBroadcast implements Runnable {
 
-    Set ipSet = new HashSet();
-    ArrayList<String> myIp = new ArrayList();
+    Set ipSet = new HashSet(); // Collects IP addresses
+    ArrayList<String> myIp = new ArrayList(); // Collects own IP address(es)
+    DatagramSocket socket;
 
     public Set getIpSet() {
         return ipSet;
-    }
-
-    DatagramSocket datasock;
+    }    
 
     @Override
     public void run() {
         // Find the server using UDP broadcast
         try {
-            //Open a random port to send the package
-            datasock = new DatagramSocket();
-            datasock.setBroadcast(true);
+            // Open port to send package
+            socket = new DatagramSocket();
+            socket.setBroadcast(true);
 
-            byte[] sendData = "DISCOVER_SERVER_REQUEST".getBytes();
+            byte[] sendData = "PeerSyncRequest".getBytes();
 
-            //Try the 255.255.255.255 first
+            // Try sending request to 255.255.255.255 first as default
             try {
-                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName("255.255.255.255"), 8888);
-                datasock.send(sendPacket);
-                System.out.println(getClass().getName() + ">>> Request packet sent to: 255.255.255.255 (DEFAULT)");
-            } catch (Exception e) {
+                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, InetAddress.getByName("255.255.255.255"), 8000);
+                socket.send(sendPacket);
+                System.out.println("Broadcast: Request sent to 255.255.255.255");
+            }
+            catch (Exception ex) {
+                ex.printStackTrace();
             }
 
-            // Broadcast the message over all the network interfaces
+            // Broadcast to all network interfaces
             Enumeration interfaces = NetworkInterface.getNetworkInterfaces();
             while (interfaces.hasMoreElements()) {
                 NetworkInterface networkInterface = (NetworkInterface) interfaces.nextElement();
 
                 if (networkInterface.isLoopback() || !networkInterface.isUp()) {
-                    continue; // Don't want to broadcast to the loopback interface
+                    continue; // Don't broadcast to loopback interface
                 }
-
+                
+                // Add broadcasted IP addresses to myIp
                 for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
                     InetAddress broadcast = interfaceAddress.getBroadcast();
                     myIp.add(interfaceAddress.getAddress().getHostAddress());
@@ -67,42 +67,40 @@ public class DiscoverBroadcast implements Runnable {
                         continue;
                     }
 
-                    // Send the broadcast package!
+                    // Send broadcast package
                     try {
                         DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, broadcast, 8888);
-                        datasock.send(sendPacket);
-                    } catch (Exception e) {
+                        socket.send(sendPacket);
                     }
-
-                    System.out.println(getClass().getName() + ">>> Request packet sent to: " + broadcast.getHostAddress() + "; Interface: " + networkInterface.getDisplayName());
+                    catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    System.out.println("Broadcast: Request sent to " + broadcast.getHostAddress() + "; Interface: " + networkInterface.getDisplayName());
                 }
             }
+            System.out.println("Broadcast: Done looping. Waiting for reply...");
 
-            System.out.println(getClass().getName() + ">>> Done looping over all network interfaces. Now waiting for a reply!");
+            // Wait for a response
+            byte[] receiveBuffer = new byte[15000];
+            DatagramPacket receivePacket = new DatagramPacket(receiveBuffer, receiveBuffer.length);
+            socket.receive(receivePacket);
 
-            //Wait for a response
-            byte[] recvBuf = new byte[15000];
-            DatagramPacket receivePacket = new DatagramPacket(recvBuf, recvBuf.length);
-            datasock.receive(receivePacket);
+            // Got a response (if someone says it's listening to me)
+            System.out.println("Broadcast: Recieved response from " + receivePacket.getAddress().getHostAddress());
 
-            //We have a response
-            System.out.println(getClass().getName() + ">>> Broadcast response from server: " + receivePacket.getAddress().getHostAddress());
-
-            //Check if the message is correct
+            // Check if message match
             String message = new String(receivePacket.getData()).trim();
-            if (message.equals("DISCOVER_SERVER_RESPONSE")) {
-                //DO SOMETHING WITH THE SERVER'S IP (for example, store it in your controller)
+            if (message.equals("PeerSyncResponse")) {
+                // Add IP address to ipSet if is not own IP
                 if (!myIp.contains(receivePacket.getAddress().getHostAddress())) {
                     ipSet.add(receivePacket.getAddress().getHostAddress());
-
                 }
-                System.out.println("Broadcast: " + ipSet);
+                System.out.println("Broadcast List: " + ipSet);
             }
-
-            //Close port
-            datasock.close();
-        } catch (IOException ex) {
-            Logger.getLogger(DiscoverBroadcast.class.getName()).log(Level.SEVERE, null, ex);
+            socket.close(); // Close port
+        }
+        catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 }
