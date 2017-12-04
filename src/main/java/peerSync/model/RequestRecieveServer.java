@@ -51,7 +51,7 @@ public class RequestRecieveServer extends UnicastRemoteObject implements RemoteI
         
         
         File delFile = new File(this.baseDirectory + "\\" + pf.getRelativeDirectory());
-        System.out.println(delFile);
+        System.out.println("deleting " + delFile);
         delFile.delete();
     }
 
