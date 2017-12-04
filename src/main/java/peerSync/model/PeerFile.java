@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,7 +20,7 @@ import org.apache.commons.codec.digest.DigestUtils;
  *
  * @author Mark Levie Mendoza <markolo25@gmail.com>
  */
-public class PeerFile {
+public class PeerFile implements Serializable {
 
     private File file;
     private String relativeDirectory;
