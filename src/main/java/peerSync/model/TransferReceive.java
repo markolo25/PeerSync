@@ -42,6 +42,7 @@ public class TransferReceive {
         BufferedOutputStream bufferedOutputStream = null;
         Socket socket = null;
         try {
+            new File(directory).getParentFile().mkdirs();
             socket = new Socket(source, port);
             System.out.println("Waiting on server for (" + directory + ")");
 
@@ -53,46 +54,52 @@ public class TransferReceive {
 
             bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
 
-            //Read mbytearray starting at the 0th position up to it's length
-            bytesRead = inputStream.read(mbytearray, 0, mbytearray.length);
-
-            //Store where you end off reading in current
-            current = bytesRead;
-
             do {
+                //Read mbytearray starting at the 0th position up to it's length
+                bytesRead = inputStream.read(mbytearray, 0, mbytearray.length);
+
+                //Store where you end off reading in current
+                current = bytesRead;
+
                 //Starting from where you left off read the length, minus the amount you read sofar
                 inputStream.read(mbytearray, current, mbytearray.length - current);
                 if (bytesRead >= 0) {
                     current += bytesRead;
                 }
-            } while (bytesRead < -1); //if there's nothing left to read you're done
+            }
+            while (bytesRead < -1); //if there's nothing left to read you're done
 
             bufferedOutputStream.write(mbytearray, 0, current); //Write array from 0 to current size
             bufferedOutputStream.flush();
             System.out.println("Recieved: (" + directory + ") from (" + source + ") " + mbytearray.length + " bytes");
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
 
-        } finally {
+        }
+        finally {
             //Close your streams even though java GC will do it for you  >_> 
             if (fileOutputStream != null) {
                 try {
                     fileOutputStream.close();
-                } catch (IOException ex) {
+                }
+                catch (IOException ex) {
                     System.out.println("Can't close fileOutputStream");
                 }
             }
             if (bufferedOutputStream != null) {
                 try {
                     bufferedOutputStream.close();
-                } catch (IOException ex) {
+                }
+                catch (IOException ex) {
                     System.out.println("Can't close BufferedOutputStream");
                 }
             }
             if (socket != null) {
                 try {
                     socket.close();
-                } catch (IOException ex) {
+                }
+                catch (IOException ex) {
                     System.out.println("Can't close socket");
                 }
             }
