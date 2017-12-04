@@ -46,7 +46,7 @@ public class TransferReceive {
             System.out.println("Waiting on server for (" + directory + ")");
 
             //recieve file
-            byte[] mbytearray = new byte[999999]; //MAX Size = 16 megabytes
+            byte[] mbytearray = new byte[6022386]; //MAX Size = 16 megabytes
 
             InputStream inputStream = socket.getInputStream();
             fileOutputStream = new FileOutputStream(directory);
