@@ -48,7 +48,11 @@ public class RequestRecieveServer extends UnicastRemoteObject implements RemoteI
         } catch (IOException ex) {
             System.out.println("File to be deleted missing");
         }
-        new File(this.baseDirectory + "\\" + pf.getRelativeDirectory()).delete();
+        
+        
+        File delFile = new File(this.baseDirectory + "\\" + pf.getRelativeDirectory());
+        System.out.println(delFile);
+        delFile.delete();
     }
 
     @Override
