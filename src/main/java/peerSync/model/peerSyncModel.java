@@ -58,7 +58,7 @@ public class peerSyncModel implements Runnable {
             remoteInterface remServ = new RequestRecieveServer(directory.toString());
             Registry reg = LocateRegistry.createRegistry(1099);
             System.out.println("ready to recieve open requests");
-            reg.rebind("192.168.1.20", remServ);
+            reg.rebind("req", remServ);
 
         }
         catch (Exception ex) {
