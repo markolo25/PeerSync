@@ -42,12 +42,12 @@ public class RequestRecieveServer extends UnicastRemoteObject implements RemoteI
 
     @Override
     public void deleteFile(PeerFile pf, int i) throws RemoteException {
-        try {
-            this.trackedFiles.remove(new PeerFile(new File(this.baseDirectory
-                    + "\\" + pf.getRelativeDirectory()), new File(this.baseDirectory)));
-        } catch (IOException ex) {
-            System.out.println("File to be deleted missing");
-        }
+//        try {
+//            this.trackedFiles.remove(new PeerFile(new File(this.baseDirectory
+//                    + "\\" + pf.getRelativeDirectory()), new File(this.baseDirectory)));
+//        } catch (IOException ex) {
+//            System.out.println("File to be deleted missing");
+//        }
         
         
         File delFile = new File(this.baseDirectory + "\\" + pf.getRelativeDirectory());
