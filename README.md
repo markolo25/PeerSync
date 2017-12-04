@@ -46,4 +46,4 @@
 
 - How does the client determine which files to sync in which order.
 
- - 
+    - Due to all the files being stored in hashsets and iterated over as hashset there is no guarantee to which order they are synced. However since we are iterating over an Arraylist provided by the apache-io function, and iterating over said list and determining during the iteration whether or not to send it to the other nodes, we are syncing in the order of the top level directory down to n-subdirectories. 

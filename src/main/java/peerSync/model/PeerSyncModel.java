@@ -103,6 +103,7 @@ public class PeerSyncModel implements Runnable {
                 }
 
             }
+            System.out.println(new ArrayList<>(FileUtils.listFiles(this.directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE)));
         }
 
     }
