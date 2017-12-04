@@ -3,6 +3,7 @@ package peerSync.model;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ServerSocket;
@@ -29,7 +30,7 @@ public class TransferSend {
         this.directory = directory;
     }
 
-    public void send() {
+    public void send() throws FileNotFoundException{
         FileInputStream fileInputStream = null;
         BufferedInputStream bufferedInputStream = null;
         OutputStream outputStream = null;
