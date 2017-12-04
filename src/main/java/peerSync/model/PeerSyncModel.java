@@ -2,7 +2,6 @@ package peerSync.model;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -103,7 +102,6 @@ public class PeerSyncModel implements Runnable {
                 }
 
             }
-            System.out.println(new ArrayList<>(FileUtils.listFiles(this.directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE)));
         }
 
     }
