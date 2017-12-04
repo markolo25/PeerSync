@@ -102,7 +102,6 @@ public class PeerSyncModel implements Runnable {
                 }
 
             }
-            trackedFiles.clear();
         }
 
     }
