@@ -9,5 +9,5 @@ import java.rmi.RemoteException;
  */
 public interface RemoteInterface extends Remote{
     public void recieveFile(PeerFile pf) throws RemoteException;
-    public void deleteFile(PeerFile pf) throws RemoteException;
+    public void deleteFile(PeerFile pf, int i) throws RemoteException;
 }

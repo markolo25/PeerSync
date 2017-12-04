@@ -39,7 +39,7 @@ public class RequestRecieveServer extends UnicastRemoteObject implements RemoteI
     }
 
     @Override
-    public void deleteFile(PeerFile pf) throws RemoteException {
+    public void deleteFile(PeerFile pf, int i) throws RemoteException {
         new File(this.baseDirectory + "\\" + pf.getRelativeDirectory()).delete();
     }
 

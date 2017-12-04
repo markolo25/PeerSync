@@ -45,7 +45,7 @@ public class RemoteInAThread implements Runnable {
         try {
             if (file != null && file.getFile() != null) {
                 if (isDelete) {
-                    remCli.deleteFile(file);
+                    remCli.deleteFile(file, 3);
 
                 }
                 else {
