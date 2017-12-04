@@ -106,6 +106,7 @@ public class PeerSyncModel implements Runnable {
 
             }
             trackedFiles = new HashSet<>();
+
         }
 
     }
