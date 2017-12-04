@@ -58,7 +58,7 @@ public class peerSyncModel implements Runnable {
             remoteInterface remServ = new RequestRecieveServer(directory.toString());
             Registry reg = LocateRegistry.createRegistry(1099);
             System.out.println("ready to recieve open requests");
-            reg.rebind("req", remServ);
+            reg.rebind("192.168.1.20", remServ);
 
         }
         catch (Exception ex) {
@@ -92,7 +92,7 @@ public class peerSyncModel implements Runnable {
                     }
                 }
                 catch (Exception e) {
-                    //NOOP: Reason is that file is gone, so it will be deleted
+                    System.out.println(e.getMessage());
                 }
             }
             HashSet<PeerFile> trackedFilesCpy = new HashSet<>(trackedFiles);
