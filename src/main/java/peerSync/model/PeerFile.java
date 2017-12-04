@@ -35,7 +35,7 @@ public class PeerFile {
             this.md5 = DigestUtils.md5Hex(IOUtils.toByteArray(fileInputStream));
             fileInputStream.close();
         }
-        catch (IOException ex) {
+        catch (Exception ex) {
             System.out.println(file + " not Found");
             ex.printStackTrace();
         }
@@ -70,7 +70,6 @@ public class PeerFile {
         this.md5 = md5;
     }
 
-    
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
@@ -83,10 +82,15 @@ public class PeerFile {
             return false;
         }
         final PeerFile other = (PeerFile) obj;
-        if (!Objects.equals(this.md5, other.md5)) {
+        if (!Objects.equals(this.md5, other.md5) && !Objects.equals(this.relativeDirectory, other.relativeDirectory)) {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return relativeDirectory.hashCode() + md5.hashCode();
     }
 
 }
