@@ -4,8 +4,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.InterfaceAddress;
+import java.net.MalformedURLException;
 import java.net.NetworkInterface;
 import java.net.SocketException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
@@ -13,6 +17,8 @@ import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
@@ -55,58 +61,96 @@ public class PeerSyncModel implements Runnable {
             System.out.println("ready to recieve open requests");
             reg.rebind("req", remServ);
 
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("HelloImpl err: " + ex.getMessage());
             ex.printStackTrace();
         }
 
         while (true) {
             HashSet<PeerFile> proposedFiles = new HashSet<>();
-            //get File List, and make peerFiles out of them
+
+            //Make a File list of the files currently in the folder
             for (File file : new ArrayList<>(FileUtils.listFiles(this.directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE))) {
+                PeerFile fileAdded = null;
                 try {
-                    PeerFile fileAdded = new PeerFile(file, directory);
+                    fileAdded = new PeerFile(file, directory);
+                } catch (IOException ex) {
+                    ex.printStackTrace();
+                }
+                if (fileAdded != null) {
                     proposedFiles.add(fileAdded);
-                    if (!trackedFiles.contains(fileAdded)) { //If file is different from a tracked add it
-                        trackedFiles.add(fileAdded);
-                        System.out.println(file + " Added");
 
-                        //Create a runnable class, that will make an RMI call to open a socket to recieve a file.
-                        new Thread(new RemoteInAThread(remoteIPs, fileAdded, false)).start();
-
-                        //Create a server to send a file
-                        new TransferSend(55265, fileAdded.getFile().getAbsolutePath()).send();
-
-                    }
-                }
-                catch (FileNotFoundException ex) {
-                    /*
-                    *If there is a file not found, notify other nodes to delete
-                    *their copy
-                     */
-                    new Thread(new RemoteInAThread(remoteIPs,
-                            new PeerFile(file, directory, null), true)).start();
-                    System.out.println("FileNotFoundException occured Line 86 Model");
-
-                }
-                catch (Exception e) {
-                    System.out.println(e.getMessage());
-                    System.out.println("Exception in Line 83 of Model");
                 }
             }
+
+            //If a file is missing from the folder remove them from
+            //the files we are currently tracking and notify the other node
             HashSet<PeerFile> trackedFilesCpy = new HashSet<>(trackedFiles);
             for (PeerFile pFileEval : trackedFilesCpy) {
                 if (!proposedFiles.contains(pFileEval)) { //If file has been removed or modified delete them
                     trackedFiles.remove(pFileEval);
-//                    new Thread(new RemoteInAThread(remoteIPs,
-//                            new PeerFile(pFileEval.getFile(), directory, null), true)).start();
-//                    System.out.println(pFileEval.getFile() + " Removed");
+                    new Thread(new RemoteInAThread(remoteIPs,
+                            new PeerFile(pFileEval.getFile(), directory, null), true)).start();
+                    System.out.println(pFileEval.getFile() + " Removed");
                 }
 
             }
+
+            RemoteInterface remCli = null;
+            try {
+                remCli = (RemoteInterface) Naming.lookup("rmi://" + new ArrayList<>(remoteIPs).get(0) + "/req");
+            } catch (NotBoundException ex) {
+                Logger.getLogger(PeerSyncModel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (MalformedURLException ex) {
+                Logger.getLogger(PeerSyncModel.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (RemoteException ex) {
+                Logger.getLogger(PeerSyncModel.class.getName()).log(Level.SEVERE, null, ex);
+            }
+
+            //for each proposed file
+            for (PeerFile pFileEval : proposedFiles) {
+                //check if it is currently being tracked
+                if (trackedFiles.contains(pFileEval)) {
+                    if (remCli != null) {
+                        try {
+                            //If other node does not have send
+                            if (!remCli.check(pFileEval)) {
+                                sendFile(pFileEval);
+                            }
+                        } catch (RemoteException ex) {
+                            Logger.getLogger(PeerSyncModel.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                } else { //If not  
+                    trackedFiles.add(pFileEval); //Track it
+                    if (remCli != null) {
+                        try {
+                            //If other node does not have 
+                            if (!remCli.check(pFileEval)) {
+                                sendFile(pFileEval); // send it
+                            }
+                        } catch (RemoteException ex) {
+                            Logger.getLogger(PeerSyncModel.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                    }
+                }
+            }
+
         }
 
+    }
+
+    private void sendFile(PeerFile pf) {
+        //Create a runnable class, that will make an RMI call to open a socket to recieve a file.
+        Thread tr = new Thread(new RemoteInAThread(remoteIPs, pf, false));
+        tr.start();
+
+        try {
+            //Create a server to send a file
+            new TransferSend(55265, pf.getFile().getAbsolutePath()).send();
+        } catch (FileNotFoundException ex) {
+            System.out.println("File to send not found");
+        }
     }
 
     public ArrayList<String> getMyIp() throws SocketException {

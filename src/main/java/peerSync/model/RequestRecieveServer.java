@@ -51,4 +51,14 @@ public class RequestRecieveServer extends UnicastRemoteObject implements RemoteI
         new File(this.baseDirectory + "\\" + pf.getRelativeDirectory()).delete();
     }
 
+    @Override
+    public boolean check(PeerFile pf) throws RemoteException {
+        try {
+            return trackedFiles.contains(new PeerFile(new File(this.baseDirectory + "\\" + pf.getRelativeDirectory()), new File(this.baseDirectory)));
+        } catch (IOException ex) {
+            return false;
+
+        }
+    }
+
 }
