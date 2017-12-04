@@ -13,7 +13,7 @@ import java.util.logging.Logger;
  *
  * @author Mark Levie Mendoza <markolo25@gmail.com>
  */
-public class TransferReceive extends Thread {
+public class TransferReceive {
 
     private int port;
     private String source;
@@ -33,8 +33,7 @@ public class TransferReceive extends Thread {
         this.directory = directory;
     }
 
-    @Override
-    public void run() {
+    public void recieve() {
         int bytesRead;
         int current = 0;
         FileOutputStream fileOutputStream = null;

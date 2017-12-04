@@ -1,9 +1,23 @@
 package peerSync.model;
 
 import java.io.File;
+import java.net.InterfaceAddress;
+import java.net.MalformedURLException;
+import java.net.NetworkInterface;
+import java.net.SocketException;
+import java.rmi.Naming;
+import java.rmi.NotBoundException;
+import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.TrueFileFilter;
 
@@ -18,22 +32,20 @@ public class peerSyncModel implements Runnable {
     private File directory;
 
     private Set<PeerFile> trackedFiles;
-    private HashSet<String> remoteIPs;
+    private Collection remoteIPs;
     private String status;
 
     /**
      *
      * @param strDirectory
+     * @param peers
      */
-    public peerSyncModel(String strDirectory) {
+    public peerSyncModel(String strDirectory, Collection peers) {
         //get Directory
         this.directory = new File(strDirectory);
-
+        remoteIPs = peers;
         trackedFiles = new HashSet<>();
         status = "created";
-        //start listening for peers
-        //send meta data to peers
-        //initialize syncing
 
     }
 
@@ -41,15 +53,42 @@ public class peerSyncModel implements Runnable {
     public void run() {
         status = "running";
 
+        try {
+            //Setup RMI Server Stub
+            remoteInterface remServ = new RequestRecieveServer(directory.toString());
+            //remoteInterface stub = (remoteInterface) UnicastRemoteObject.exportObject(remServ, 0);
+            Registry reg = LocateRegistry.createRegistry(1099);
+            System.out.println("ready to recieve open requests");
+            reg.rebind("req", remServ);
+
+        }
+        catch (Exception ex) {
+            System.out.println("HelloImpl err: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+
         while (true) {
+            try {
+                //Setup Client
+                remoteInterface remCli = (remoteInterface) Naming.lookup("rmi://" + remoteIPs.stream().findFirst() + ":5000/req");
+            }
+            catch (Exception ex) {
+                //System.out.println("No Peers Found");
+            }
+
             HashSet<PeerFile> proposedFiles = new HashSet<>();
             //get File List, and make peerFiles out of them
             for (File file : new ArrayList<>(FileUtils.listFiles(this.directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE))) {
-                PeerFile fileAdded = new PeerFile(file, directory);
-                proposedFiles.add(fileAdded);
-                if (!trackedFiles.contains(fileAdded)) { //If file is different from a tracked add it
-                    trackedFiles.add(fileAdded);
-                    System.out.println(file + " Added");
+                try {
+                    PeerFile fileAdded = new PeerFile(file, directory);
+                    proposedFiles.add(fileAdded);
+                    if (!trackedFiles.contains(fileAdded)) { //If file is different from a tracked add it
+                        trackedFiles.add(fileAdded);
+                        System.out.println(file + " Added");
+                    }
+                }
+                catch (Exception e) {
+                    //NOOP: Reason is that file is gone, so it will be deleted
                 }
             }
             HashSet<PeerFile> trackedFilesCpy = new HashSet<>(trackedFiles);
@@ -63,6 +102,22 @@ public class peerSyncModel implements Runnable {
 
         }
 
+    }
+
+    public ArrayList<String> getMyIp() throws SocketException {
+        ArrayList<String> myIP = new ArrayList();
+
+        Enumeration interfaces = NetworkInterface.getNetworkInterfaces();
+        while (interfaces.hasMoreElements()) {
+            NetworkInterface networkInterface = (NetworkInterface) interfaces.nextElement();
+            if (networkInterface.isLoopback() || !networkInterface.isUp()) {
+                continue; // Don't want to broadcast to the loopback interface
+            }
+            for (InterfaceAddress interfaceAddress : networkInterface.getInterfaceAddresses()) {
+                myIP.add(interfaceAddress.getAddress().getHostAddress());
+            }
+        }
+        return myIP;
     }
 
     public void queueServers() {

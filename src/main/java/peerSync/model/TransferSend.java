@@ -12,7 +12,7 @@ import java.net.Socket;
  *
  * @author Mark Levie Mendoza <markolo25@gmail.com>
  */
-public class TransferSend extends Thread {
+public class TransferSend {
 
     private int port;
     private String directory;
@@ -29,8 +29,7 @@ public class TransferSend extends Thread {
         this.directory = directory;
     }
 
-    @Override
-    public void run() {
+    public void send() {
         FileInputStream fileInputStream = null;
         BufferedInputStream bufferedInputStream = null;
         OutputStream outputStream = null;
