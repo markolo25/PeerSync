@@ -44,7 +44,6 @@ public class TransferReceive {
         try {
             new File(directory).getParentFile().mkdirs();
             socket = new Socket(source, port);
-            socket.setSoTimeout(15000);
             System.out.println("Waiting on server for (" + directory + ")");
 
             //recieve file

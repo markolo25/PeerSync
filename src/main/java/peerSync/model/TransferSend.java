@@ -39,7 +39,6 @@ public class TransferSend {
         try {
             //Create a server socket
             serverSocket = new ServerSocket(port);
-            serverSocket.setSoTimeout(15000);
 
             while (true) {
                 System.out.println("Server Open...");
@@ -63,7 +62,6 @@ public class TransferSend {
                 }
                 catch (Exception e) {
                     e.printStackTrace();
-                    new File(directory).delete();
                     break;
                 }
                 finally {
@@ -89,6 +87,7 @@ public class TransferSend {
                     serverSocket.close();
                 }
                 catch (IOException ex) {
+                    System.out.println("Line 90 Sender Printed this");
                     ex.printStackTrace();
                 }
             }
