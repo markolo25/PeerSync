@@ -39,6 +39,7 @@ public class TransferSend {
         try {
             //Create a server socket
             serverSocket = new ServerSocket(port);
+            serverSocket.setSoTimeout(15000);
 
             while (true) {
                 System.out.println("Server Open...");
