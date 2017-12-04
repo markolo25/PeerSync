@@ -84,7 +84,7 @@ public class PeerSyncModel implements Runnable {
                     *their copy
                     */                   
                     new Thread(new RemoteInAThread(remoteIPs,
-                            new PeerFile(file, directory, null), true)).start();
+                            new PeerFile(null, directory, null), true)).start();
 
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
