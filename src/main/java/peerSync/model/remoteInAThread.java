@@ -38,7 +38,7 @@ public class remoteInAThread implements Runnable {
             System.out.println("No Peers Found");
         }
         try {
-            remCli.openRecieveSocket(fileAdded);
+            remCli.recieveFile(fileAdded);
         }
         catch (RemoteException ex) {
             ex.printStackTrace();

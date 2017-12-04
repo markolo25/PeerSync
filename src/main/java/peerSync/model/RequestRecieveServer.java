@@ -22,20 +22,20 @@ public class RequestRecieveServer extends UnicastRemoteObject implements remoteI
     }
 
     @Override
-    public void openRecieveSocket(PeerFile pf) throws RemoteException {
+    public void recieveFile(PeerFile pf) throws RemoteException {
         try {
             System.out.println(pf);
-            System.out.println("I get here");
             new TransferReceive(55265, getClientHost(), this.baseDirectory
                     + "\\" + pf.getRelativeDirectory()).recieve();
 
-            this.trackedFiles.add(new PeerFile(new File(this.baseDirectory
-                    + "\\" + pf.getRelativeDirectory()), new File(this.baseDirectory)));
+//            this.trackedFiles.add(new PeerFile(new File(this.baseDirectory
+//                    + "\\" + pf.getRelativeDirectory()), new File(this.baseDirectory)));
 
         }
         catch (Exception e) {
             e.printStackTrace();
         }
+        
     }
 
 }
