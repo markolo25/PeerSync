@@ -83,6 +83,7 @@ public class PeerSyncModel implements Runnable {
                     *If there is a file not found, notify other nodes to delete
                     *their copy
                      */
+                    System.out.println("Delete is called by exception");
                     new Thread(new RemoteInAThread(remoteIPs,
                             new PeerFile(file, directory, null), true)).start();
                     System.out.println("FileNotFoundException occured Line 86 Model");
@@ -121,17 +122,4 @@ public class PeerSyncModel implements Runnable {
         }
         return myIP;
     }
-
-    public void queueServers() {
-
-    }
-
-    public void queueClient() {
-
-    }
-
-    public void broadCast() {
-        //Insert broadcast here
-    }
-
 }
