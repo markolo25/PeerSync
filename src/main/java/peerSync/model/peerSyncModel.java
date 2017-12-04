@@ -55,7 +55,7 @@ public class peerSyncModel implements Runnable {
 
         try {
             //Setup RMI Server Stub
-            remoteInterface remServ = new RequestRecieveServer(directory.toString());
+            remoteInterface remServ = new RequestRecieveServer(directory.toString(),trackedFiles);
             Registry reg = LocateRegistry.createRegistry(1099);
             System.out.println("ready to recieve open requests");
             reg.rebind("req", remServ);

@@ -1,7 +1,9 @@
 package peerSync.model;
 
+import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.Set;
 
 /**
  *
@@ -10,10 +12,12 @@ import java.rmi.server.UnicastRemoteObject;
 public class RequestRecieveServer extends UnicastRemoteObject implements remoteInterface {
 
     String baseDirectory;
+    private Set<PeerFile> trackedFiles;
 
-    public RequestRecieveServer(String baseDirectory) throws RemoteException {
+    public RequestRecieveServer(String baseDirectory, Set<PeerFile> trackedFiles) throws RemoteException {
         super();
         this.baseDirectory = baseDirectory;
+        this.trackedFiles = trackedFiles;
         System.out.println(this.baseDirectory);
     }
 
@@ -24,7 +28,12 @@ public class RequestRecieveServer extends UnicastRemoteObject implements remoteI
             System.out.println("I get here");
             new TransferReceive(55265, getClientHost(), this.baseDirectory
                     + "\\" + pf.getRelativeDirectory()).recieve();
-        } catch (Exception e) {
+
+            this.trackedFiles.add(new PeerFile(new File(this.baseDirectory
+                    + "\\" + pf.getRelativeDirectory()), new File(this.baseDirectory)));
+
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
