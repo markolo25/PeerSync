@@ -69,7 +69,7 @@ public class DiscoverBroadcast implements Runnable {
 
                     // Send broadcast package
                     try {
-                        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, broadcast, 8888);
+                        DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, broadcast, 8000);
                         socket.send(sendPacket);
                     }
                     catch (Exception ex) {
