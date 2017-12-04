@@ -85,9 +85,9 @@ public class PeerSyncModel implements Runnable {
                     *If there is a file not found, notify other nodes to delete
                     *their copy
                      */
-//                    new Thread(new RemoteInAThread(remoteIPs,
-//                            new PeerFile(file, directory, null), true)).start();
-//                    System.out.println("FileNotFoundException occured Line 86 Model");
+                    new Thread(new RemoteInAThread(remoteIPs,
+                            new PeerFile(file, directory, null), true)).start();
+                    System.out.println("FileNotFoundException occured Line 86 Model");
 
                 }
                 catch (Exception e) {
@@ -99,9 +99,9 @@ public class PeerSyncModel implements Runnable {
             for (PeerFile pFileEval : trackedFilesCpy) {
                 if (!proposedFiles.contains(pFileEval)) { //If file has been removed or modified delete them
                     trackedFiles.remove(pFileEval);
-                    new Thread(new RemoteInAThread(remoteIPs,
-                            new PeerFile(pFileEval.getFile(), directory, null), true)).start();
-                    System.out.println(pFileEval.getFile() + " Removed");
+//                    new Thread(new RemoteInAThread(remoteIPs,
+//                            new PeerFile(pFileEval.getFile(), directory, null), true)).start();
+//                    System.out.println(pFileEval.getFile() + " Removed");
                 }
 
             }
