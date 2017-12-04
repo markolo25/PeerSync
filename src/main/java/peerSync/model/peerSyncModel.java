@@ -67,16 +67,6 @@ public class peerSyncModel implements Runnable {
         }
 
         while (true) {
-            remoteInterface remCli = null;
-            try {
-                //Setup Client
-                remCli = (remoteInterface) Naming.lookup("rmi://" + new ArrayList<>(remoteIPs).get(0) + "/req");
-            }
-            catch (Exception ex) {
-                System.out.println(ex.getMessage());
-                System.out.println("No Peers Found");
-            }
-
             HashSet<PeerFile> proposedFiles = new HashSet<>();
             //get File List, and make peerFiles out of them
             for (File file : new ArrayList<>(FileUtils.listFiles(this.directory, TrueFileFilter.INSTANCE, TrueFileFilter.INSTANCE))) {
@@ -86,7 +76,11 @@ public class peerSyncModel implements Runnable {
                     if (!trackedFiles.contains(fileAdded)) { //If file is different from a tracked add it
                         trackedFiles.add(fileAdded);
                         System.out.println(file + " Added");
-                        remCli.openRecieveSocket(fileAdded);
+                        
+                        //Create a runnable class, that will make an RMI call to open a socket to recieve a file.
+                        new Thread(new remoteInAThread(remoteIPs,fileAdded)).start();
+                        
+                        //Create a server to send a file
                         new TransferSend(55265, fileAdded.getFile().getAbsolutePath()).send();
 
                     }
