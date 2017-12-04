@@ -16,22 +16,22 @@ import java.util.logging.Logger;
  *
  * @author Mark Levie Mendoza <markolo25@gmail.com>
  */
-public class remoteInAThread implements Runnable {
+public class RemoteInAThread implements Runnable {
 
     private Collection remoteIPs;
     private PeerFile fileAdded;
 
-    public remoteInAThread(Collection remoteIPs, PeerFile fileAdded) {
+    public RemoteInAThread(Collection remoteIPs, PeerFile fileAdded) {
         this.remoteIPs = remoteIPs;
         this.fileAdded = fileAdded;
     }
 
     @Override
     public void run() {
-        remoteInterface remCli = null;
+        RemoteInterface remCli = null;
         try {
             //Setup Client
-            remCli = (remoteInterface) Naming.lookup("rmi://" + new ArrayList<>(remoteIPs).get(0) + "/req");
+            remCli = (RemoteInterface) Naming.lookup("rmi://" + new ArrayList<>(remoteIPs).get(0) + "/req");
         } catch (Exception ex) {
             System.out.println(ex.getMessage());
             System.out.println("No Peers Found");

@@ -20,7 +20,7 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
  * @author Mark Levie Mendoza <markolo25@gmail.com>
  *
  */
-public class peerSyncModel implements Runnable {
+public class PeerSyncModel implements Runnable {
 
     private File directory;
 
@@ -33,7 +33,7 @@ public class peerSyncModel implements Runnable {
      * @param strDirectory
      * @param peers
      */
-    public peerSyncModel(String strDirectory, Collection peers) {
+    public PeerSyncModel(String strDirectory, Collection peers) {
         //get Directory
         this.directory = new File(strDirectory);
         remoteIPs = peers;
@@ -48,7 +48,7 @@ public class peerSyncModel implements Runnable {
 
         try {
             //Setup RMI Server Stub
-            remoteInterface remServ = new RequestRecieveServer(directory.toString(),trackedFiles);
+            RemoteInterface remServ = new RequestRecieveServer(directory.toString(),trackedFiles);
             Registry reg = LocateRegistry.createRegistry(1099);
             System.out.println("ready to recieve open requests");
             reg.rebind("req", remServ);
@@ -71,7 +71,7 @@ public class peerSyncModel implements Runnable {
                         System.out.println(file + " Added");
                         
                         //Create a runnable class, that will make an RMI call to open a socket to recieve a file.
-                        new Thread(new remoteInAThread(remoteIPs,fileAdded)).start();
+                        new Thread(new RemoteInAThread(remoteIPs,fileAdded)).start();
                         
                         //Create a server to send a file
                         new TransferSend(55265, fileAdded.getFile().getAbsolutePath()).send();

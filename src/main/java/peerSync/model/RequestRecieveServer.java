@@ -9,7 +9,7 @@ import java.util.Set;
  *
  * @author Mark Levie Mendoza <markolo25@gmail.com>
  */
-public class RequestRecieveServer extends UnicastRemoteObject implements remoteInterface {
+public class RequestRecieveServer extends UnicastRemoteObject implements RemoteInterface {
 
     String baseDirectory;
     private Set<PeerFile> trackedFiles;
@@ -31,10 +31,16 @@ public class RequestRecieveServer extends UnicastRemoteObject implements remoteI
             this.trackedFiles.add(new PeerFile(new File(this.baseDirectory
                     + "\\" + pf.getRelativeDirectory()), new File(this.baseDirectory)));
 
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void deleteFile(PeerFile pf) throws RemoteException {
+        new File(this.baseDirectory + "\\" + pf.getRelativeDirectory()).delete();
     }
 
 }
