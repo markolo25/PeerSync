@@ -28,14 +28,13 @@ public class RequestRecieveServer extends UnicastRemoteObject implements remoteI
             new TransferReceive(55265, getClientHost(), this.baseDirectory
                     + "\\" + pf.getRelativeDirectory()).recieve();
 
-//            this.trackedFiles.add(new PeerFile(new File(this.baseDirectory
-//                    + "\\" + pf.getRelativeDirectory()), new File(this.baseDirectory)));
+            this.trackedFiles.add(new PeerFile(new File(this.baseDirectory
+                    + "\\" + pf.getRelativeDirectory()), new File(this.baseDirectory)));
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
-        
+
     }
 
 }
