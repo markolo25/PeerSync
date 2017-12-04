@@ -1,6 +1,8 @@
 package peerSync.model;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.net.InterfaceAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
@@ -48,13 +50,12 @@ public class PeerSyncModel implements Runnable {
 
         try {
             //Setup RMI Server Stub
-            RemoteInterface remServ = new RequestRecieveServer(directory.toString(),trackedFiles);
+            RemoteInterface remServ = new RequestRecieveServer(directory.toString(), trackedFiles);
             Registry reg = LocateRegistry.createRegistry(1099);
             System.out.println("ready to recieve open requests");
             reg.rebind("req", remServ);
 
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println("HelloImpl err: " + ex.getMessage());
             ex.printStackTrace();
         }
@@ -69,16 +70,23 @@ public class PeerSyncModel implements Runnable {
                     if (!trackedFiles.contains(fileAdded)) { //If file is different from a tracked add it
                         trackedFiles.add(fileAdded);
                         System.out.println(file + " Added");
-                        
+
                         //Create a runnable class, that will make an RMI call to open a socket to recieve a file.
-                        new Thread(new RemoteInAThread(remoteIPs,fileAdded,false)).start();
-                        
+                        new Thread(new RemoteInAThread(remoteIPs, fileAdded, false)).start();
+
                         //Create a server to send a file
                         new TransferSend(55265, fileAdded.getFile().getAbsolutePath()).send();
 
                     }
-                }
-                catch (Exception e) {
+                } catch (FileNotFoundException ex) {
+                    /*
+                    *If there is a file not found, notify other nodes to delete
+                    *their copy
+                    */                   
+                    new Thread(new RemoteInAThread(remoteIPs,
+                            new PeerFile(file, directory, null), true)).start();
+
+                } catch (Exception e) {
                     System.out.println(e.getMessage());
                     System.out.println("Exception in Line 83 of Model");
                 }

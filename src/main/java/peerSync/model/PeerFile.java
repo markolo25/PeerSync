@@ -26,22 +26,33 @@ public class PeerFile implements Serializable {
     private String relativeDirectory;
     private String md5;
 
-    public PeerFile(File file, File baseFolder) {
+    /**
+     * Constructor for creating PeerFile objects that can be used for messaging
+     * to inform other nodes of files to remove or other states.
+     *
+     * @param file
+     * @param relativeDirectory
+     * @param md5
+     */
+    public PeerFile(File file, File baseFolder, String md5) {
+        this.file = null;
+        if (file != null) {
+            this.file = file;
+
+        }
+        this.relativeDirectory = relativeDirectory;
+        this.md5 = md5;
+    }
+
+    public PeerFile(File file, File baseFolder) throws IOException {
         this.file = file;
         this.relativeDirectory = baseFolder.toURI().relativize(file.toURI()).getPath();
         this.md5 = null;
 
-        try {
-            FileInputStream fileInputStream = new FileInputStream(this.file);
-            this.md5 = DigestUtils.md5Hex(IOUtils.toByteArray(fileInputStream));
-            fileInputStream.close();
-        }
-        catch (Exception ex) {
-            System.out.println(file + " not Found");
-            System.out.println("Exception in PeerFile");
+        FileInputStream fileInputStream = new FileInputStream(this.file);
+        this.md5 = DigestUtils.md5Hex(IOUtils.toByteArray(fileInputStream));
+        fileInputStream.close();
 
-            ex.printStackTrace();
-        }
     }
 
     @Override
