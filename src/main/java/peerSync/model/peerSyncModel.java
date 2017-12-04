@@ -52,7 +52,8 @@ public class peerSyncModel implements Runnable {
                     System.out.println(file + " Added");
                 }
             }
-            for (PeerFile pFileEval : trackedFiles) {
+            HashSet<PeerFile> trackedFilesCpy = new HashSet<>(trackedFiles);
+            for (PeerFile pFileEval : trackedFilesCpy) {
                 if (!proposedFiles.contains(pFileEval)) { //If file has been removed or modified delete them
                     trackedFiles.remove(pFileEval);
                     System.out.println(pFileEval.getFile() + "Removed");
