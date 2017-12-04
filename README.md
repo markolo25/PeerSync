@@ -33,3 +33,17 @@
 - In order to delete a file, we use the FileNotFoundException that occurs when we delete a local file and handle it by performaing a Remote Method Invocation, to delete the file in the other nodes.
 
 - For modifying files we add the modified file as if it was a new file, and is sent to the other nodes, and is then added to the proposed list, and when compared to currently tracked files, the old peerFile having a relativeDirectory, and md5 has that is no longer present is deleted off of the tracked files.
+
+### Answers to recommended considerations since I don't know what else to talk about.
+
+- How does the client discover other clients on the network?
+
+    - Clients find each other by performing UDP broadcast, the node that broadcasts is known by the other nodes.
+
+- How does the client deal with files of the same name, but different contents? Different timestamps?
+
+    - Due to how modfications are implemented, the node who last saved will determine the state of the file in other nodes. Files with the same name can co-exist as long as they are in different directories, as we track their directory relative to the sync folder, and their md5.
+
+- How does the client determine which files to sync in which order.
+
+ - 
