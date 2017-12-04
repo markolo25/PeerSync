@@ -22,7 +22,7 @@
 
 - So you start off, broadcasting in all your nodes, and refreshing your list to ensure that all your nodes are accounted for, don't worry you can add more later. 
 
-- When you select a directory Syncing starts, The application uses a function provided by Apache-io for mapping out the directories and subdirectories of your sync folder, which is then added to a proposed list.
+- When you select a directory Syncing starts, The application uses a function provided by Apache Commons IO for mapping out the directories and subdirectories of your sync folder, which is then added to a proposed list.
 
 - The Proposed List is then compared to the currently tracked list of peerFiles which is our File with some additional data making it easier to map the directories, and their equality being determined by the md5 of the file as well as the location of the file relative to the directory being synced.
 
@@ -46,4 +46,4 @@
 
 - How does the client determine which files to sync in which order.
 
-    - Due to all the files being stored in hashsets and iterated over as hashset there is no guarantee to which order they are synced. However since we are iterating over an Arraylist provided by the apache-io function, and iterating over said list and determining during the iteration whether or not to send it to the other nodes, we are syncing in the order of the top level directory down to n-subdirectories. 
+    - Due to all the files being stored in hashsets and iterated over as hashset there is no guarantee to which order they are synced. However since we are iterating over an Arraylist provided by the Apache Commons IO function, and iterating over said list and determining during the iteration whether or not to send it to the other nodes, we are syncing in the order of the top level directory down to n-subdirectories. 
