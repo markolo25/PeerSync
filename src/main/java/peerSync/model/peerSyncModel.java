@@ -70,7 +70,7 @@ public class peerSyncModel implements Runnable {
             remoteInterface remCli = null;
             try {
                 //Setup Client
-                remCli = (remoteInterface) Naming.lookup("rmi://" + new ArrayList<>(remoteIPs).get(0) + ":5000/req");
+                remCli = (remoteInterface) Naming.lookup("rmi://" + new ArrayList<>(remoteIPs).get(0) + "/req");
             }
             catch (Exception ex) {
                 System.out.println(ex.getMessage());
