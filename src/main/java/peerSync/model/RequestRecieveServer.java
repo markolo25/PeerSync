@@ -1,9 +1,12 @@
 package peerSync.model;
 
 import java.io.File;
+import java.io.IOException;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -31,8 +34,7 @@ public class RequestRecieveServer extends UnicastRemoteObject implements RemoteI
             this.trackedFiles.add(new PeerFile(new File(this.baseDirectory
                     + "\\" + pf.getRelativeDirectory()), new File(this.baseDirectory)));
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -40,6 +42,12 @@ public class RequestRecieveServer extends UnicastRemoteObject implements RemoteI
 
     @Override
     public void deleteFile(PeerFile pf, int i) throws RemoteException {
+        try {
+            this.trackedFiles.remove(new PeerFile(new File(this.baseDirectory
+                    + "\\" + pf.getRelativeDirectory()), new File(this.baseDirectory)));
+        } catch (IOException ex) {
+            System.out.println("File to be deleted missing");
+        }
         new File(this.baseDirectory + "\\" + pf.getRelativeDirectory()).delete();
     }
 
