@@ -40,7 +40,7 @@ public class PeerFile implements Serializable {
             this.file = file;
 
         }
-        this.relativeDirectory = relativeDirectory;
+        this.relativeDirectory = baseFolder.toURI().relativize(file.toURI()).getPath();
         this.md5 = md5;
     }
 
