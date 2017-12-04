@@ -47,7 +47,7 @@ public class TransferReceive {
             System.out.println("Waiting on server for (" + directory + ")");
 
             //recieve file
-            byte[] mbytearray = new byte[2147483647]; 
+            byte[] mbytearray = new byte[1024*1024*1024]; 
 
             InputStream inputStream = socket.getInputStream();
             fileOutputStream = new FileOutputStream(directory);

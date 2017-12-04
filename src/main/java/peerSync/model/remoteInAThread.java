@@ -32,15 +32,16 @@ public class remoteInAThread implements Runnable {
         try {
             //Setup Client
             remCli = (remoteInterface) Naming.lookup("rmi://" + new ArrayList<>(remoteIPs).get(0) + "/req");
-        }
-        catch (Exception ex) {
+        } catch (Exception ex) {
             System.out.println(ex.getMessage());
             System.out.println("No Peers Found");
         }
         try {
-            remCli.recieveFile(fileAdded);
-        }
-        catch (RemoteException ex) {
+            if (fileAdded != null) {
+                remCli.recieveFile(fileAdded);
+
+            }
+        } catch (RemoteException ex) {
             ex.printStackTrace();
         }
 
