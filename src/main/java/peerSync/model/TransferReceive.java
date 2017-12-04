@@ -31,9 +31,11 @@ public class TransferReceive {
         this.port = port;
         this.source = source;
         this.directory = directory;
+        System.out.println("Transfer Recieve for" + directory + "from" + source + "created");
     }
 
     public void recieve() {
+        System.out.println("Recieve started");
         int bytesRead;
         int current = 0;
         FileOutputStream fileOutputStream = null;
@@ -63,40 +65,34 @@ public class TransferReceive {
                 if (bytesRead >= 0) {
                     current += bytesRead;
                 }
-            }
-            while (bytesRead < -1); //if there's nothing left to read you're done
+            } while (bytesRead < -1); //if there's nothing left to read you're done
 
             bufferedOutputStream.write(mbytearray, 0, current); //Write array from 0 to current size
             bufferedOutputStream.flush();
             System.out.println("Recieved: (" + directory + ") from (" + source + ") " + mbytearray.length + " bytes");
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
 
-        }
-        finally {
+        } finally {
             //Close your streams even though java GC will do it for you  >_> 
             if (fileOutputStream != null) {
                 try {
                     fileOutputStream.close();
-                }
-                catch (IOException ex) {
+                } catch (IOException ex) {
                     System.out.println("Can't close fileOutputStream");
                 }
             }
             if (bufferedOutputStream != null) {
                 try {
                     bufferedOutputStream.close();
-                }
-                catch (IOException ex) {
+                } catch (IOException ex) {
                     System.out.println("Can't close BufferedOutputStream");
                 }
             }
             if (socket != null) {
                 try {
                     socket.close();
-                }
-                catch (IOException ex) {
+                } catch (IOException ex) {
                     System.out.println("Can't close socket");
                 }
             }
