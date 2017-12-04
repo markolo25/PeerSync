@@ -86,10 +86,8 @@ public class peerSyncModel implements Runnable {
                     if (!trackedFiles.contains(fileAdded)) { //If file is different from a tracked add it
                         trackedFiles.add(fileAdded);
                         System.out.println(file + " Added");
-                        if (remCli != null) {
-                            remCli.openRecieveSocket(fileAdded);
-                            new TransferSend(55265, fileAdded.getFile().getAbsolutePath()).send();
-                        }
+                        remCli.openRecieveSocket(fileAdded);
+                        new TransferSend(55265, fileAdded.getFile().getAbsolutePath()).send();
 
                     }
                 }
@@ -101,7 +99,7 @@ public class peerSyncModel implements Runnable {
             for (PeerFile pFileEval : trackedFilesCpy) {
                 if (!proposedFiles.contains(pFileEval)) { //If file has been removed or modified delete them
                     trackedFiles.remove(pFileEval);
-                    System.out.println(pFileEval.getFile() + "Removed");
+                    System.out.println(pFileEval.getFile() + " Removed");
                 }
 
             }

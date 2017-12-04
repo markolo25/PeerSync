@@ -19,6 +19,7 @@ public class RequestRecieveServer extends UnicastRemoteObject implements remoteI
     @Override
     public void openRecieveSocket(PeerFile pf) throws RemoteException {
         try {
+            System.out.println(this.baseDirectory + pf.getRelativeDirectory());
             new TransferReceive(55265, getClientHost(), this.baseDirectory + pf.getRelativeDirectory()).recieve();
         }
         catch (Exception e) {
