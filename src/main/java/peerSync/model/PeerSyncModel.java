@@ -55,7 +55,8 @@ public class PeerSyncModel implements Runnable {
             System.out.println("ready to recieve open requests");
             reg.rebind("req", remServ);
 
-        } catch (Exception ex) {
+        }
+        catch (Exception ex) {
             System.out.println("HelloImpl err: " + ex.getMessage());
             ex.printStackTrace();
         }
@@ -78,7 +79,8 @@ public class PeerSyncModel implements Runnable {
                         new TransferSend(55265, fileAdded.getFile().getAbsolutePath()).send();
 
                     }
-                } catch (FileNotFoundException ex) {
+                }
+                catch (FileNotFoundException ex) {
                     /*
                     *If there is a file not found, notify other nodes to delete
                     *their copy
@@ -87,7 +89,8 @@ public class PeerSyncModel implements Runnable {
                             new PeerFile(file, directory, null), true)).start();
                     System.out.println("FileNotFoundException occured Line 86 Model");
 
-                } catch (Exception e) {
+                }
+                catch (Exception e) {
                     System.out.println(e.getMessage());
                     System.out.println("Exception in Line 83 of Model");
                 }
@@ -102,7 +105,7 @@ public class PeerSyncModel implements Runnable {
                 }
 
             }
-            trackedFiles.clear();
+            trackedFiles = new HashSet<>();
         }
 
     }
