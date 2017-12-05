@@ -30,7 +30,7 @@ public class TransferSend {
         this.directory = directory;
     }
 
-    public void send() throws FileNotFoundException{
+    public void send() throws FileNotFoundException {
         FileInputStream fileInputStream = null;
         BufferedInputStream bufferedInputStream = null;
         OutputStream outputStream = null;
@@ -42,12 +42,13 @@ public class TransferSend {
 
             while (true) {
                 System.out.println("Server Open...");
+                File file;
 
                 try {
                     socket = serverSocket.accept();
                     System.out.println("Connected to " + socket);
 
-                    File file = new File(directory);
+                    file = new File(directory);
                     byte[] mbytearray = new byte[(int) file.length()];
                     fileInputStream = new FileInputStream(file);
                     bufferedInputStream = new BufferedInputStream(fileInputStream);
@@ -59,12 +60,11 @@ public class TransferSend {
                     System.out.println("Done. Killing Server In charge of: " + directory);
                     break;
 
-                }
-                catch (Exception e) {
+                } catch (Exception e) {
                     e.printStackTrace();
-                    //break;
-                }
-                finally {
+                    file.delete();
+                    break;
+                } finally {
                     if (bufferedInputStream != null) {
                         bufferedInputStream.close();
                     }
@@ -77,16 +77,14 @@ public class TransferSend {
                 }
             }
 
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        }
-        finally {
+
+        } finally {
             if (serverSocket != null) {
                 try {
                     serverSocket.close();
-                }
-                catch (IOException ex) {
+                } catch (IOException ex) {
                     System.out.println("Line 90 Sender Printed this");
                     ex.printStackTrace();
                 }
