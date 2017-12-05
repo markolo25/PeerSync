@@ -96,9 +96,9 @@ public class PeerSyncModel implements Runnable {
             for (PeerFile pFileEval : trackedFilesCpy) {
                 if (!proposedFiles.contains(pFileEval)) { //If file has been removed or modified delete them
                     trackedFiles.remove(pFileEval);
-                    new Thread(new RemoteInAThread(remoteIPs,
-                            new PeerFile(pFileEval.getFile(), directory, null), true)).start();
-                    System.out.println(pFileEval.getFile() + " Removed");
+//                    new Thread(new RemoteInAThread(remoteIPs,
+//                            new PeerFile(pFileEval.getFile(), directory, null), true)).start();
+//                    System.out.println(pFileEval.getFile() + " Removed");
                 }
 
             }
