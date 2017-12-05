@@ -42,7 +42,7 @@ public class TransferSend {
 
             while (true) {
                 System.out.println("Server Open...");
-                File file;
+                File file = null;
 
                 try {
                     socket = serverSocket.accept();
