@@ -62,7 +62,7 @@ public class TransferSend {
                 }
                 catch (Exception e) {
                     e.printStackTrace();
-                    break;
+                    //break;
                 }
                 finally {
                     if (bufferedInputStream != null) {
