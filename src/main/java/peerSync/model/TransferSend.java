@@ -62,7 +62,9 @@ public class TransferSend {
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    file.delete();
+                    if (file != null) {
+                        file.delete();
+                    }
                     break;
                 } finally {
                     if (bufferedInputStream != null) {
