@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- *
+ * Source: https://demey.io/network-discovery-using-udp-broadcast/
  * @author Amanda
  */
 public class DiscoverListen implements Runnable {
